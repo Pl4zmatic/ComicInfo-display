@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ComicInfo Display</title>
+        <script type="module" src="scripts/events/chooseFiles.js"></script>
+        <link rel="stylesheet" href="styles/css/main.css" />
+    </head>
+    <body>
+        <div id="contentEmpty">
+            <label for="fileInput">Choose folder(s): </label>
+            <input type="file" name="fileInput" id="fileInput" webkitdirectory multiple />
+        </div>
+
+        <div id="contentSelected" class="hidden">
+            <div>
+                <div id="previewContainer">
+                    <div id="previewList"></div>
+                    <div id="preview"></div>
+                </div>
+                <button id="otherButton">Choose Other</button>
+            </div>
+        </div>
+    </body>
+</html>

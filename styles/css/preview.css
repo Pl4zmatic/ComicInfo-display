@@ -1,0 +1,47 @@
+#previewContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#previewList {
+  width: 40%;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--previewList-flex-gap);
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: var(--previewList-flex-gap);
+}
+#previewList img {
+  height: var(--previewList-button-size);
+  width: var(--previewList-button-size);
+  aspect-ratio: 1/1;
+}
+#previewList img:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+#preview {
+  width: 60%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+#preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+#preview h2 {
+  text-align: center;
+}
+
+/*# sourceMappingURL=preview.css.map */
