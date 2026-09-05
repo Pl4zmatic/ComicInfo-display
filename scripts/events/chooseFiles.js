@@ -7,8 +7,12 @@ const files = document.getElementById("fileInput");
 const previewList = document.getElementById("previewList");
 const preview = document.getElementById("preview");
 
-files.addEventListener("change", (event) => {
-    const selectedFiles = getSelectedFilesSorted(event.target.files);
+if (files.files.length > 0) {
+    filesChanged(files);
+}
+
+function filesChanged(element) {
+    const selectedFiles = getSelectedFilesSorted(element.files);
 
     previewListItems.length = 0; // Clear the previewListItems array before adding new items
     previewList.innerHTML = ""; // Clear the previewList container before adding new items
@@ -29,6 +33,10 @@ files.addEventListener("change", (event) => {
         contentEmpty.classList.toggle("hidden");
         contentSelected.classList.toggle("hidden");
     }
+}
+
+files.addEventListener("change", (event) => {
+    filesChanged(event.target);
 });
 
 function getSelectedFilesSorted(selectedFiles) {

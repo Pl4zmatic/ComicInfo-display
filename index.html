@@ -5,11 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>ComicInfo Display</title>
         <script type="module" src="scripts/events/chooseFiles.js"></script>
+        <script type="module" src="scripts/xmlEditor.js"></script>
+        <script type="module" src="scripts/xmlForm.js"></script>
         <link rel="stylesheet" href="styles/css/main.css" />
     </head>
     <body>
         <div id="contentEmpty">
-            <label for="fileInput">Choose folder(s): </label>
+            <label for="fileInput">Choose folder(s)</label>
             <input type="file" name="fileInput" id="fileInput" webkitdirectory multiple />
         </div>
 
@@ -20,6 +22,57 @@
                     <div id="preview"></div>
                 </div>
                 <button id="otherButton">Choose Other</button>
+            </div>
+            <div class="form" id="xmlForm">
+                <label for="xmlTitle">Title</label>
+                <input type="text" name="title" id="xmlTitle" />
+
+                <label for="xmlSeries">Series</label>
+                <input type="text" name="series" id="xmlSeries" />
+
+                <label for="xmlNumber">Number</label>
+                <input type="number" name="number" id="xmlNumber" />
+
+                <label for="xmlVolume">Volume</label>
+                <input type="number" name="volume" id="xmlVolume" />
+
+                <label for="xmlCount">Count</label>
+                <input type="number" name="count" id="xmlCount" />
+
+                <label for="xmlSummary">Summary</label>
+                <textarea name="summary" id="xmlSummary" rows="3"></textarea>
+
+                <label for="xmlWriter">Writer</label>
+                <input type="text" name="writer" id="xmlWriter" />
+
+                <label for="xmlPublisher">Publisher</label>
+                <input type="text" name="publisher" id="xmlPublisher" />
+
+                <label for="xmlDate">Date</label>
+                <input type="date" name="date" id="xmlDate" />
+
+                <label for="xmlGenre">Genre</label>
+                <input type="text" name="genre" id="xmlGenre" />
+
+                <label for="xmlTags">Tags</label>
+                <input type="text" name="tags" id="xmlTags" />
+
+                <label for="xmlLanguage">Language</label>
+                <select name="language" id="xmlLanguage">
+                    <option value="en">English</option>
+                    <option value="ja">Japanese</option>
+                </select>
+
+                <label for="xmlManga">Manga</label>
+                <select name="manga" id="xmlManga">
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                    <option value="YesAndRightToLeft">Right to Left</option>
+                </select>
+            </div>
+            <div>
+                <h2>ComicInfo.xml</h2>
+                <div id="xmlOutput"></div>
             </div>
         </div>
     </body>
