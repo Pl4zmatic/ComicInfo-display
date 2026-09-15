@@ -43,3 +43,43 @@ class XmlForm {
 }
 
 export const xmlForm = new XmlForm();
+
+const buttonFormat = document.getElementById("buttonFormat");
+
+buttonFormat.addEventListener("click", () => {
+    formatSeperatedValues([xmlForm.formElements.genre, xmlForm.formElements.tags]);
+});
+
+function formatSeperatedValues(textAreas) {
+    for (const textArea of textAreas) {
+        let seperator = undefined;
+        try {
+            seperator = Object.entries(
+                textArea.value
+                    .matchAll(/[^a-z\n\s]/g)
+                    .toArray()
+                    .reduce((specialCharsCount, char) => {
+                        if (specialCharsCount[char] === undefined) specialCharsCount[char] = 0;
+                        specialCharsCount[char] += 1;
+                        return specialCharsCount;
+                    }, {}),
+            ).sort(([key1, value1], [key2, value2]) => value2 - value1)[0][0];
+        } finally {
+            if (seperator !== undefined) console.log(seperator);
+        }
+
+        let formattedValues = textArea.value
+            .replaceAll(seperator, ",")
+            .replaceAll("\n", ",")
+            .split(",")
+            .map((element) => element.trim());
+        textArea.value = formattedValues.join(",");
+
+        xmlContextController.changeContext(
+            {
+                [textArea.name]: textArea.value,
+            },
+            textArea,
+        );
+    }
+}

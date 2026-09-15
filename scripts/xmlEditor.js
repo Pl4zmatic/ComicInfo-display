@@ -1,7 +1,7 @@
 import { basicSetup, EditorView } from "https://esm.sh/codemirror";
-import { EditorState } from "https://esm.sh/@codemirror/state";
 import { xml } from "https://esm.sh/@codemirror/lang-xml";
 import { xmlContextController } from "./XmlContextController.js";
+import { EditorView as View } from "https://esm.sh/@codemirror/view";
 
 class XmlEditor {
     #xmlEditorElement = new EditorView({
@@ -28,7 +28,7 @@ class XmlEditor {
     <LanguageISO></LanguageISO>
     <Manga></Manga>
 </ComicInfo>`,
-        extensions: [basicSetup, xml()],
+        extensions: [basicSetup, xml(), View.updateListener.of(editorValueChanged)],
         parent: document.querySelector("#xmlOutput"),
     });
 
@@ -70,3 +70,68 @@ class XmlEditor {
 }
 
 export const xmlEditor = new XmlEditor();
+
+function getTagValue(doc, key) {
+    const lowerDoc = doc.toLowerCase();
+    const openTag = `<${key}>`;
+    const closeTag = `</${key}>`;
+    const openIndex = lowerDoc.indexOf(openTag);
+    const closeIndex = lowerDoc.indexOf(closeTag, openIndex + openTag.length);
+
+    if (openIndex === -1 || closeIndex === -1) return "";
+
+    return doc.slice(openIndex + openTag.length, closeIndex);
+}
+
+function getKeyFromEditorPosition(doc, position) {
+    const trackedKeys = [...xmlContextController.getKeys(), "year", "month", "day"];
+
+    for (const key of trackedKeys) {
+        const lowerDoc = doc.toLowerCase();
+        const openTag = `<${key}>`;
+        const closeTag = `</${key}>`;
+        const openIndex = lowerDoc.indexOf(openTag);
+        const closeIndex = lowerDoc.indexOf(closeTag, openIndex + openTag.length);
+
+        if (openIndex === -1 || closeIndex === -1) continue;
+
+        const valueStart = openIndex + openTag.length;
+        const valueEnd = closeIndex;
+
+        if (position >= valueStart && position <= valueEnd) {
+            return key;
+        }
+    }
+
+    return null;
+}
+
+function editorValueChanged(update) {
+    if (!update.docChanged) return;
+
+    const doc = update.state.doc.toString();
+    const changedKeys = new Set();
+
+    update.changes.iterChanges((fromA, toA, fromB, toB, inserted) => {
+        const key = getKeyFromEditorPosition(doc, fromB || fromA);
+        if (key) {
+            changedKeys.add(key);
+        }
+    });
+
+    for (const key of changedKeys) {
+        if (["year", "month", "day"].includes(key)) {
+            const date = [getTagValue(doc, "year"), getTagValue(doc, "month"), getTagValue(doc, "day")]
+                .filter(Boolean)
+                .join("-");
+
+            if (date) {
+                xmlContextController.changeContext({ date }, xmlEditor);
+            }
+
+            continue;
+        }
+
+        xmlContextController.changeContext({ [key]: getTagValue(doc, key) }, xmlEditor);
+    }
+}

@@ -1,7 +1,9 @@
+import { xmlContextController } from "../XmlContextController.js";
+
 export let previewListItems = [];
 
 export function addEventsToPreviewListItems() {
-    for (const image of previewListItems) {
+    for (const { image, xmlContext } of previewListItems) {
         image.addEventListener("click", () => {
             const preview = document.getElementById("preview");
             const fullImage = document.createElement("img");
@@ -17,6 +19,9 @@ export function addEventsToPreviewListItems() {
                 preview.appendChild(subfolderNameH2);
                 preview.appendChild(fullImage);
             }
+
+            xmlContextController.currentContext = xmlContext;
+            xmlContextController.changeContext();
         });
     }
 }

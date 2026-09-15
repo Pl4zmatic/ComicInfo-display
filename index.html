@@ -51,11 +51,27 @@
                 <label for="xmlDate">Date</label>
                 <input type="date" name="date" id="xmlDate" />
 
-                <label for="xmlGenre">Genre</label>
-                <input type="text" name="genre" id="xmlGenre" />
+                <div id="genreAndTagsContainer">
+                    <span id="genreContainer">
+                        <label for="xmlGenre">Genre</label>
+                        <textarea
+                            name="genre"
+                            id="xmlGenre"
+                            rows="3"
+                            placeholder="Comma seperated values e.g:&#10;action,sci-fi,romance&#10;Newline seperated also accepted."></textarea>
+                    </span>
 
-                <label for="xmlTags">Tags</label>
-                <input type="text" name="tags" id="xmlTags" />
+                    <span id="tagsContainer">
+                        <label for="xmlTags">Tags</label>
+                        <textarea
+                            name="tags"
+                            id="xmlTags"
+                            rows="3"
+                            placeholder="Comma seperated values e.g:&#10;action,sci-fi,romance&#10;Space or newline seperated also accepted."></textarea>
+                    </span>
+
+                    <button id="buttonFormat">Format</button>
+                </div>
 
                 <label for="xmlLanguage">Language</label>
                 <select name="language" id="xmlLanguage">

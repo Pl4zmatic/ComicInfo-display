@@ -1,4 +1,5 @@
 import { previewListItems, addEventsToPreviewListItems } from "./selectSubfolder.js";
+import XmlContext from "../xmlContext.js";
 
 // Read Files
 const contentEmpty = document.getElementById("contentEmpty");
@@ -24,7 +25,7 @@ function filesChanged(element) {
         image.id = `previewImage${index}`;
         image.dataset.subfolder = selectedFile.subfolder;
 
-        previewListItems.push(image);
+        previewListItems.push({ image, xmlContext: new XmlContext(selectedFile) });
         previewList.appendChild(image);
     });
     addEventsToPreviewListItems();

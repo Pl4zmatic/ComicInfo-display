@@ -1,0 +1,28 @@
+#genreAndTagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    & > *:first-child {
+        margin-right: var(--flex-gap);
+    }
+}
+
+#genreContainer,
+#tagsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--flex-gap);
+    width: calc(50% - var(--flex-gap) / 2);
+    box-sizing: border-box;
+
+    textarea {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+#buttonFormat {
+    width: 80%;
+    text-align: center;
+    margin: var(--flex-gap) auto;
+}
