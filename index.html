@@ -5,11 +5,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>ComicInfo Display</title>
         <script type="module" src="scripts/events/chooseFiles.js"></script>
-        <script type="module" src="scripts/xmlEditor.js"></script>
-        <script type="module" src="scripts/xmlForm.js"></script>
+        <script type="module" src="scripts/XmlEditor.js"></script>
+        <script type="module" src="scripts/XmlForm.js"></script>
         <link rel="stylesheet" href="styles/css/main.css" />
     </head>
     <body>
+        <dialog id="dialogExport" closedby="any">
+            <label for="selectExtension">Extension</label>
+            <select name="extension" id="selectExtension">
+                <option value=".cbz" selected>.cbz</option>
+                <option value=".zip">.zip</option>
+            </select>
+
+            <button id="buttonBatch" title="Download everything with populated ComicInfo files.">Batch</button>
+            <button id="buttonSingle" title="Download currently selected item with ComicInfo added.">Single</button>
+        </dialog>
+
         <div id="contentEmpty">
             <label for="fileInput">Choose folder(s)</label>
             <input type="file" name="fileInput" id="fileInput" webkitdirectory multiple />
@@ -89,6 +100,7 @@
             <div>
                 <h2>ComicInfo.xml</h2>
                 <div id="xmlOutput"></div>
+                <button id="buttonExport" command="show-modal" commandfor="dialogExport">Export</button>
             </div>
         </div>
     </body>

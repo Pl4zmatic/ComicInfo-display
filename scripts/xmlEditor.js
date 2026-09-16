@@ -2,9 +2,11 @@ import { basicSetup, EditorView } from "https://esm.sh/codemirror";
 import { xml } from "https://esm.sh/@codemirror/lang-xml";
 import { xmlContextController } from "./XmlContextController.js";
 import { EditorView as View } from "https://esm.sh/@codemirror/view";
+import JSZip from "https://esm.sh/jszip";
+import saveAs from "https://esm.sh/file-saver";
 
 class XmlEditor {
-    #xmlEditorElement = new EditorView({
+    xmlEditorElement = new EditorView({
         doc: `<?xml version="1.0" encoding="utf-8"?>
 <ComicInfo>
     <Title></Title>
@@ -46,7 +48,7 @@ class XmlEditor {
 
                 for (const [dateKey, dateValue] of Object.entries(dateObject)) {
                     const [fromIndex, toIndex] = this.findIndexRange(dateKey);
-                    this.#xmlEditorElement.dispatch({
+                    this.xmlEditorElement.dispatch({
                         changes: { from: fromIndex, to: toIndex, insert: dateValue },
                     });
                 }
@@ -57,13 +59,13 @@ class XmlEditor {
     }
 
     findIndexRange(key) {
-        const fromIndex = this.#xmlEditorElement.state.doc.toString().toLowerCase().indexOf(`<${key}>`) + key.length + 2;
-        const toIndex = this.#xmlEditorElement.state.doc.toString().toLowerCase().indexOf(`</${key}>`);
+        const fromIndex = this.xmlEditorElement.state.doc.toString().toLowerCase().indexOf(`<${key}>`) + key.length + 2;
+        const toIndex = this.xmlEditorElement.state.doc.toString().toLowerCase().indexOf(`</${key}>`);
         return [fromIndex, toIndex];
     }
 
     replaceOrRemoveFromEditor(fromIndex, toIndex, value) {
-        this.#xmlEditorElement.dispatch({
+        this.xmlEditorElement.dispatch({
             changes: { from: fromIndex, to: toIndex, insert: value },
         });
     }
@@ -121,9 +123,7 @@ function editorValueChanged(update) {
 
     for (const key of changedKeys) {
         if (["year", "month", "day"].includes(key)) {
-            const date = [getTagValue(doc, "year"), getTagValue(doc, "month"), getTagValue(doc, "day")]
-                .filter(Boolean)
-                .join("-");
+            const date = [getTagValue(doc, "year"), getTagValue(doc, "month"), getTagValue(doc, "day")].filter(Boolean).join("-");
 
             if (date) {
                 xmlContextController.changeContext({ date }, xmlEditor);
@@ -135,3 +135,64 @@ function editorValueChanged(update) {
         xmlContextController.changeContext({ [key]: getTagValue(doc, key) }, xmlEditor);
     }
 }
+
+const buttonBatch = document.getElementById("buttonBatch");
+const buttonSingle = document.getElementById("buttonSingle");
+const selectExtension = document.getElementById("selectExtension");
+
+buttonBatch.addEventListener("click", () => {
+    const zip = new JSZip();
+
+    const itemsWithTitle = xmlContextController.allXmlContexts.filter(function (context) {
+        return context.data.title !== undefined && context.data.title != "";
+    });
+
+    if (itemsWithTitle.length == 0) {
+        console.error("No title found from allContexts.");
+        return;
+    }
+
+    xmlContextController.allXmlContexts.forEach(function (context, index) {
+        const subfolderNumber = context.data.number <= 0 ? index + 1 : itemsWithTitle[0].data.number;
+        const subfolderName = `${itemsWithTitle[0].data.title} ${subfolderNumber}`;
+        zip.folder(subfolderName);
+
+        zip.file(`${subfolderName}/ComicInfo.xml`, context.getXml());
+        const files = context.folderData.files;
+        for (const xmlContextfile of files) {
+            zip.file(`${subfolderName}/${xmlContextfile.name}`, xmlContextfile);
+        }
+    });
+
+    zip.generateAsync({ type: "blob" }).then(function (content) {
+        saveAs(content, `${itemsWithTitle[0].data.title}${selectExtension.value}`);
+    });
+});
+
+buttonSingle.addEventListener("click", () => {
+    const zip = new JSZip();
+
+    const itemsWithTitle = xmlContextController.allXmlContexts.filter(function (context) {
+        return context.data.title !== undefined && context.data.title != "";
+    });
+
+    if (itemsWithTitle.length == 0) {
+        console.error("No title found from allContexts.");
+        return;
+    }
+
+    const context = xmlContextController.currentXmlContext;
+
+    const subfolderNumber = context.data.number <= 0 ? "" : itemsWithTitle[0].data.number;
+    const subfolderName = `${itemsWithTitle[0].data.title}${subfolderNumber}`;
+
+    zip.file(`ComicInfo.xml`, context.getXml());
+    const files = context.folderData.files;
+    for (const xmlContextfile of files) {
+        zip.file(`${xmlContextfile.name}`, xmlContextfile);
+    }
+
+    zip.generateAsync({ type: "blob" }).then(function (content) {
+        saveAs(content, `${subfolderName}${selectExtension.value}`);
+    });
+});

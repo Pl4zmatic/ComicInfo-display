@@ -1,5 +1,6 @@
-import { previewListItems, addEventsToPreviewListItems } from "./selectSubfolder.js";
+import { addEventsToPreviewImages } from "./selectSubfolder.js";
 import XmlContext from "../xmlContext.js";
+import { xmlContextController } from "../XmlContextController.js";
 
 // Read Files
 const contentEmpty = document.getElementById("contentEmpty");
@@ -15,7 +16,7 @@ if (files.files.length > 0) {
 function filesChanged(element) {
     const selectedFiles = getSelectedFilesSorted(element.files);
 
-    previewListItems.length = 0; // Clear the previewListItems array before adding new items
+    xmlContextController.allXmlContexts.length = 0;
     previewList.innerHTML = ""; // Clear the previewList container before adding new items
     preview.innerHTML = ""; // Clear the preview container before adding new items
 
@@ -25,10 +26,10 @@ function filesChanged(element) {
         image.id = `previewImage${index}`;
         image.dataset.subfolder = selectedFile.subfolder;
 
-        previewListItems.push({ image, xmlContext: new XmlContext(selectedFile) });
+        xmlContextController.allXmlContexts.push(new XmlContext(selectedFile, image));
         previewList.appendChild(image);
     });
-    addEventsToPreviewListItems();
+    addEventsToPreviewImages();
 
     if (!contentEmpty.classList.contains("hidden")) {
         contentEmpty.classList.toggle("hidden");

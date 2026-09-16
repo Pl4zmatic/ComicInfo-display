@@ -1,15 +1,16 @@
 class XmlContextController {
-    currentContext;
+    currentXmlContext;
+    allXmlContexts = [];
 
     constructor() {
         this.observers = [];
     }
 
     changeContext(newContext = undefined, source = undefined) {
-        if (source !== undefined) this.currentContext.changeContext(newContext);
+        if (source !== undefined) this.currentXmlContext.changeContext(newContext);
         for (const observer of this.observers) {
             if (source === undefined || observer !== source) {
-                observer.update({ ...this.currentContext.data });
+                observer.update({ ...this.currentXmlContext.data });
             }
         }
     }
@@ -19,7 +20,7 @@ class XmlContextController {
     }
 
     getKeys() {
-        return this.currentContext.getKeys();
+        return this.currentXmlContext.getKeys();
     }
 }
 
