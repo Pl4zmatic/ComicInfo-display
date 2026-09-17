@@ -22,10 +22,26 @@ class XmlForm {
         xmlContextController.addObserver(this);
 
         for (const [key, value] of Object.entries(this.formElements)) {
-            value.addEventListener("input", () => {
+            if (key == "date") {
+                value.addEventListener("input", (event) => {
+                    const date = new Date(event.target.value);
+                    xmlContextController.changeContext(
+                        {
+                            year: date.getFullYear(),
+                            month: date.getMonth() + 1,
+                            day: date.getDate(),
+                        },
+                        this,
+                    );
+                });
+
+                continue;
+            }
+
+            value.addEventListener("input", (event) => {
                 xmlContextController.changeContext(
                     {
-                        [key]: value.value,
+                        [key]: event.target.value,
                     },
                     this,
                 );
@@ -34,7 +50,20 @@ class XmlForm {
     }
 
     update(xmlContext) {
+        const tempDate = new Date();
         for (const [key, value] of Object.entries(xmlContext)) {
+            if (["year", "month", "day"].includes(key)) {
+                const dateConstructor = {
+                    year: (value, dateObject) => dateObject.setFullYear(value),
+                    month: (value, dateObject) => dateObject.setMonth(value - 1),
+                    day: (value, dateObject) => dateObject.setDate(value),
+                };
+                dateConstructor[key](value, tempDate);
+
+                if (key == "day") this.formElements["date"].valueAsDate = tempDate;
+                continue;
+            }
+
             if (this.formElements[key].value != value) {
                 this.formElements[key].value = value;
             }

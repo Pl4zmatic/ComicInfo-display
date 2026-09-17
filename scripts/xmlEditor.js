@@ -4,6 +4,7 @@ import { xmlContextController } from "./XmlContextController.js";
 import { EditorView as View } from "https://esm.sh/@codemirror/view";
 import JSZip from "https://esm.sh/jszip";
 import saveAs from "https://esm.sh/file-saver";
+import { xmlTools } from "./xmlTools.js";
 
 class XmlEditor {
     xmlEditorElement = new EditorView({
@@ -30,9 +31,11 @@ class XmlEditor {
     <LanguageISO></LanguageISO>
     <Manga></Manga>
 </ComicInfo>`,
-        extensions: [basicSetup, xml(), View.updateListener.of(editorValueChanged)],
+        extensions: [basicSetup, xml(), View.updateListener.of(this.#editorValueChanged.bind(this))],
         parent: document.querySelector("#xmlOutput"),
     });
+
+    #isSyncing = false;
 
     constructor() {
         xmlContextController.addObserver(this);
@@ -40,101 +43,39 @@ class XmlEditor {
 
     update(xmlContext) {
         for (const [key, value] of Object.entries(xmlContext)) {
-            const [fromIndex, toIndex] = this.findIndexRange(key);
-
-            if (key === "date") {
-                const [year, month, day] = value.split("-");
-                const dateObject = { year, month, day };
-
-                for (const [dateKey, dateValue] of Object.entries(dateObject)) {
-                    const [fromIndex, toIndex] = this.findIndexRange(dateKey);
-                    this.xmlEditorElement.dispatch({
-                        changes: { from: fromIndex, to: toIndex, insert: dateValue },
-                    });
-                }
-            } else {
-                this.replaceOrRemoveFromEditor(fromIndex, toIndex, value);
-            }
+            const [fromIndex, toIndex] = xmlTools.findKeyIndexRange(key, this.xmlEditorElement.state.doc.toString());
+            this.replaceOrRemoveFromEditor(fromIndex, toIndex, value);
         }
     }
 
-    findIndexRange(key) {
-        const fromIndex = this.xmlEditorElement.state.doc.toString().toLowerCase().indexOf(`<${key}>`) + key.length + 2;
-        const toIndex = this.xmlEditorElement.state.doc.toString().toLowerCase().indexOf(`</${key}>`);
-        return [fromIndex, toIndex];
+    replaceOrRemoveFromEditor(fromIndex, toIndex, value) {
+        this.#isSyncing = true;
+        this.xmlEditorElement.dispatch({
+            changes: { from: fromIndex, to: toIndex, insert: String(value) },
+        });
+        this.#isSyncing = false;
     }
 
-    replaceOrRemoveFromEditor(fromIndex, toIndex, value) {
-        this.xmlEditorElement.dispatch({
-            changes: { from: fromIndex, to: toIndex, insert: value },
+    #editorValueChanged(update) {
+        if (!update.docChanged || this.#isSyncing) return;
+
+        const xmlContent = update.state.doc.toString();
+        const changedKeys = new Set();
+
+        update.changes.iterChanges((fromA, toA, fromB, toB, inserted) => {
+            const key = xmlTools.getKeyFromEditorPosition(fromB || fromA, xmlContent, xmlContextController.getKeys());
+            if (key) {
+                changedKeys.add(key);
+            }
         });
+
+        for (const key of changedKeys) {
+            xmlContextController.changeContext({ [key]: xmlTools.getKeyValue(key, xmlContent) }, this);
+        }
     }
 }
 
 export const xmlEditor = new XmlEditor();
-
-function getTagValue(doc, key) {
-    const lowerDoc = doc.toLowerCase();
-    const openTag = `<${key}>`;
-    const closeTag = `</${key}>`;
-    const openIndex = lowerDoc.indexOf(openTag);
-    const closeIndex = lowerDoc.indexOf(closeTag, openIndex + openTag.length);
-
-    if (openIndex === -1 || closeIndex === -1) return "";
-
-    return doc.slice(openIndex + openTag.length, closeIndex);
-}
-
-function getKeyFromEditorPosition(doc, position) {
-    const trackedKeys = [...xmlContextController.getKeys(), "year", "month", "day"];
-
-    for (const key of trackedKeys) {
-        const lowerDoc = doc.toLowerCase();
-        const openTag = `<${key}>`;
-        const closeTag = `</${key}>`;
-        const openIndex = lowerDoc.indexOf(openTag);
-        const closeIndex = lowerDoc.indexOf(closeTag, openIndex + openTag.length);
-
-        if (openIndex === -1 || closeIndex === -1) continue;
-
-        const valueStart = openIndex + openTag.length;
-        const valueEnd = closeIndex;
-
-        if (position >= valueStart && position <= valueEnd) {
-            return key;
-        }
-    }
-
-    return null;
-}
-
-function editorValueChanged(update) {
-    if (!update.docChanged) return;
-
-    const doc = update.state.doc.toString();
-    const changedKeys = new Set();
-
-    update.changes.iterChanges((fromA, toA, fromB, toB, inserted) => {
-        const key = getKeyFromEditorPosition(doc, fromB || fromA);
-        if (key) {
-            changedKeys.add(key);
-        }
-    });
-
-    for (const key of changedKeys) {
-        if (["year", "month", "day"].includes(key)) {
-            const date = [getTagValue(doc, "year"), getTagValue(doc, "month"), getTagValue(doc, "day")].filter(Boolean).join("-");
-
-            if (date) {
-                xmlContextController.changeContext({ date }, xmlEditor);
-            }
-
-            continue;
-        }
-
-        xmlContextController.changeContext({ [key]: getTagValue(doc, key) }, xmlEditor);
-    }
-}
 
 const buttonBatch = document.getElementById("buttonBatch");
 const buttonSingle = document.getElementById("buttonSingle");

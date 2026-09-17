@@ -1,6 +1,7 @@
 import { addEventsToPreviewImages } from "./selectSubfolder.js";
 import XmlContext from "../xmlContext.js";
 import { xmlContextController } from "../XmlContextController.js";
+import { xmlTools } from "../xmlTools.js";
 
 // Read Files
 const contentEmpty = document.getElementById("contentEmpty");
@@ -14,19 +15,24 @@ if (files.files.length > 0) {
 }
 
 function filesChanged(element) {
-    const selectedFiles = getSelectedFilesSorted(element.files);
+    const folders = getSelectedFilesSortedAsFolders(element.files);
 
     xmlContextController.allXmlContexts.length = 0;
     previewList.innerHTML = ""; // Clear the previewList container before adding new items
     preview.innerHTML = ""; // Clear the preview container before adding new items
 
-    selectedFiles.forEach((selectedFile, index) => {
+    folders.forEach((folder, index) => {
         const image = document.createElement("img");
-        image.src = URL.createObjectURL(Array.from(selectedFile.files).find((file) => file.type.startsWith("image/")));
+        image.src = URL.createObjectURL(Array.from(folder.files).find((file) => file.type.startsWith("image/")));
         image.id = `previewImage${index}`;
-        image.dataset.subfolder = selectedFile.subfolder;
+        image.dataset.subfolder = folder.subfolder;
 
-        xmlContextController.allXmlContexts.push(new XmlContext(selectedFile, image));
+        const folderXmlContext = new XmlContext(folder, image);
+
+        const comicInfoFromFolder = folder.files.find((file) => file.name == "ComicInfo.xml");
+        if (comicInfoFromFolder) parseExistingComicInfoToContext(comicInfoFromFolder, folderXmlContext);
+
+        xmlContextController.allXmlContexts.push(folderXmlContext);
         previewList.appendChild(image);
     });
     addEventsToPreviewImages();
@@ -41,7 +47,7 @@ files.addEventListener("change", (event) => {
     filesChanged(event.target);
 });
 
-function getSelectedFilesSorted(selectedFiles) {
+function getSelectedFilesSortedAsFolders(selectedFiles) {
     const sortedFiles = [];
     const folderNames = new Set(Array.from(selectedFiles).map((file) => file.webkitRelativePath.split("/").slice(0, 2).join("/")));
     for (const folderName of folderNames) {
@@ -62,3 +68,10 @@ const otherButton = document.getElementById("otherButton");
 otherButton.addEventListener("click", () => {
     files.click();
 });
+
+async function parseExistingComicInfoToContext(comicInfoFile, xmlContext) {
+    for (const key of xmlContext.getKeys()) {
+        const fileContentString = await comicInfoFile.text();
+        xmlContext.data[key] = xmlTools.getKeyValue(key, fileContentString);
+    }
+}
