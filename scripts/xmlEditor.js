@@ -5,6 +5,7 @@ import { EditorView as View } from "https://esm.sh/@codemirror/view";
 import JSZip from "https://esm.sh/jszip";
 import saveAs from "https://esm.sh/file-saver";
 import { xmlTools } from "./xmlTools.js";
+import LoadingBar from "./LoadingBar.js";
 
 class XmlEditor {
     xmlEditorElement = new EditorView({
@@ -80,22 +81,31 @@ export const xmlEditor = new XmlEditor();
 const buttonBatch = document.getElementById("buttonBatch");
 const buttonSingle = document.getElementById("buttonSingle");
 const selectExtension = document.getElementById("selectExtension");
+const dialogContent = document.querySelector(".dialogContent");
+const loadingContainer = document.getElementById("loadingContainer");
+const loadingTitle = document.getElementById("loadingTitle");
+const loadingCounter = document.getElementById("loadingCounter");
 
 buttonBatch.addEventListener("click", () => {
     const zip = new JSZip();
 
-    const itemsWithTitle = xmlContextController.allXmlContexts.filter(function (context) {
-        return context.data.title !== undefined && context.data.title != "";
+    const itemsWithSerieOrTitle = xmlContextController.allXmlContexts.filter(function (context) {
+        const hasSeriesName = !!context.data.series;
+        return hasSeriesName || !!context.data.title;
     });
 
-    if (itemsWithTitle.length == 0) {
-        console.error("No title found from allContexts.");
+    if (itemsWithSerieOrTitle.length == 0) {
+        console.error("No serie name or title found from allContexts.");
         return;
     }
 
+    const serieOrTitle = itemsWithSerieOrTitle[0].data.series || itemsWithSerieOrTitle[0].data.title;
+
+    const loadingBar = new LoadingBar(loadingContainer, loadingTitle, loadingCounter, undefined, dialogContent);
+
     xmlContextController.allXmlContexts.forEach(function (context, index) {
-        const subfolderNumber = context.data.number <= 0 ? index + 1 : itemsWithTitle[0].data.number;
-        const subfolderName = `${itemsWithTitle[0].data.title} ${subfolderNumber}`;
+        const subfolderNumber = context.data.number <= 0 ? index + 1 : context.data.number;
+        const subfolderName = `${serieOrTitle} ${subfolderNumber}`;
         zip.folder(subfolderName);
 
         zip.file(`${subfolderName}/ComicInfo.xml`, context.getXml());
@@ -105,27 +115,31 @@ buttonBatch.addEventListener("click", () => {
         }
     });
 
-    zip.generateAsync({ type: "blob" }).then(function (content) {
-        saveAs(content, `${itemsWithTitle[0].data.title}${selectExtension.value}`);
+    zip.generateAsync({ type: "blob" }, function (metadata) {
+        loadingBar.setTitle(metadata.currentFile);
+        loadingBar.setItemCounter(Number(metadata.percent).toFixed(0));
+    }).then(function (content) {
+        saveAs(content, `${serieOrTitle}${selectExtension.value}`);
     });
 });
 
 buttonSingle.addEventListener("click", () => {
     const zip = new JSZip();
 
-    const itemsWithTitle = xmlContextController.allXmlContexts.filter(function (context) {
-        return context.data.title !== undefined && context.data.title != "";
+    const itemsWithSerieOrTitle = xmlContextController.allXmlContexts.filter(function (context) {
+        const hasSeriesName = !!context.data.series;
+        return !!context.data.title || hasSeriesName;
     });
 
-    if (itemsWithTitle.length == 0) {
-        console.error("No title found from allContexts.");
+    if (itemsWithSerieOrTitle.length == 0) {
+        console.error("No title or serie name found from allContexts.");
         return;
     }
 
     const context = xmlContextController.currentXmlContext;
 
-    const subfolderNumber = context.data.number <= 0 ? "" : itemsWithTitle[0].data.number;
-    const subfolderName = `${itemsWithTitle[0].data.title}${subfolderNumber}`;
+    const subfolderNumber = context.data.number <= 0 ? "" : ` ${context.data.number}`;
+    const subfolderName = `${itemsWithSerieOrTitle[0].data.title || itemsWithSerieOrTitle[0].data.series}${subfolderNumber}`;
 
     zip.file(`ComicInfo.xml`, context.getXml());
     const files = context.folderData.files;

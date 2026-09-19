@@ -10,98 +10,131 @@
         <link rel="stylesheet" href="styles/css/main.css" />
     </head>
     <body>
-        <dialog id="dialogExport" closedby="any">
-            <label for="selectExtension">Extension</label>
-            <select name="extension" id="selectExtension">
-                <option value=".cbz" selected>.cbz</option>
-                <option value=".zip">.zip</option>
-            </select>
+        <header>
+            <span class="iconWithTextContainer">
+                <img src="assets/xml-document-svgrepo-com.png" alt="" class="icon" />
+                Comic Info Display
+            </span>
+            <span id="spanFolderName"></span>
+            <button id="otherButton" class="iconWithTextContainer button border">
+                <img src="assets/file-pencil-alt-1-svgrepo-com.png" alt="" class="icon" />
+                Load Folder
+            </button>
+        </header>
 
-            <button id="buttonBatch" title="Download everything with populated ComicInfo files.">Batch</button>
-            <button id="buttonSingle" title="Download currently selected item with ComicInfo added.">Single</button>
-        </dialog>
+        <main>
+            <dialog id="dialogExport" closedby="any">
+                <div class="dialogContent">
+                    <strong>Download Files</strong>
+                    <small>Choose a format and download option.</small>
+                    <hr />
+                    <label for="selectExtension">File Format</label>
+                    <select name="extension" id="selectExtension">
+                        <option value=".cbz" selected>.cbz</option>
+                        <option value=".zip">.zip</option>
+                    </select>
 
-        <div id="contentEmpty">
-            <label for="fileInput">Choose folder(s)</label>
-            <input type="file" name="fileInput" id="fileInput" webkitdirectory multiple />
-        </div>
+                    <div class="buttonRow">
+                        <button id="buttonBatch" title="Download everything with populated ComicInfo files.">Batch Download</button>
+                        <button id="buttonSingle" title="Download currently selected item with ComicInfo added.">Single File</button>
+                    </div>
+                </div>
 
-        <div id="contentSelected" class="hidden">
-            <div>
+                <div id="loadingContainer" class="hidden">
+                    <div>
+                        <span id="loadingTitle"></span>
+                        <span id="loadingCounter"></span>
+                    </div>
+                </div>
+            </dialog>
+
+            <div id="contentEmpty">
+                <label for="fileInput">Choose folder(s)</label>
+                <input type="file" name="fileInput" id="fileInput" webkitdirectory multiple />
+            </div>
+
+            <div id="contentSelected" class="hidden">
                 <div id="previewContainer">
                     <div id="previewList"></div>
                     <div id="preview"></div>
                 </div>
-                <button id="otherButton">Choose Other</button>
-            </div>
-            <div class="form" id="xmlForm">
-                <label for="xmlTitle">Title</label>
-                <input type="text" name="title" id="xmlTitle" />
+                <div class="form" id="xmlForm">
+                    <label for="xmlTitle">Title</label>
+                    <input type="text" name="title" id="xmlTitle" />
 
-                <label for="xmlSeries">Series</label>
-                <input type="text" name="series" id="xmlSeries" />
+                    <label for="xmlSeries">Series</label>
+                    <input type="text" name="series" id="xmlSeries" />
 
-                <label for="xmlNumber">Number</label>
-                <input type="number" name="number" id="xmlNumber" />
+                    <label for="xmlNumber">Number</label>
+                    <input type="number" name="number" id="xmlNumber" />
 
-                <label for="xmlVolume">Volume</label>
-                <input type="number" name="volume" id="xmlVolume" />
+                    <label for="xmlVolume">Volume</label>
+                    <input type="number" name="volume" id="xmlVolume" />
 
-                <label for="xmlCount">Count</label>
-                <input type="number" name="count" id="xmlCount" />
+                    <label for="xmlCount">Count</label>
+                    <input type="number" name="count" id="xmlCount" />
 
-                <label for="xmlSummary">Summary</label>
-                <textarea name="summary" id="xmlSummary" rows="3"></textarea>
+                    <label for="xmlSummary">Summary</label>
+                    <div class="textareaField border">
+                        <textarea name="summary" id="xmlSummary" rows="3"></textarea>
+                    </div>
 
-                <label for="xmlWriter">Writer</label>
-                <input type="text" name="writer" id="xmlWriter" />
+                    <label for="xmlWriter">Writer</label>
+                    <input type="text" name="writer" id="xmlWriter" />
 
-                <label for="xmlPublisher">Publisher</label>
-                <input type="text" name="publisher" id="xmlPublisher" />
+                    <label for="xmlPublisher">Publisher</label>
+                    <input type="text" name="publisher" id="xmlPublisher" />
 
-                <label for="xmlDate">Date</label>
-                <input type="date" name="date" id="xmlDate" />
+                    <label for="xmlDate">Date</label>
+                    <input type="date" name="date" id="xmlDate" />
 
-                <div id="genreAndTagsContainer">
-                    <span id="genreContainer">
-                        <label for="xmlGenre">Genre</label>
-                        <textarea
-                            name="genre"
-                            id="xmlGenre"
-                            rows="3"
-                            placeholder="Comma seperated values e.g:&#10;action,sci-fi,romance&#10;Newline seperated also accepted."></textarea>
-                    </span>
+                    <div id="genreAndTagsContainer">
+                        <span id="genreContainer">
+                            <label for="xmlGenre">Genre</label>
+                            <div class="textareaField border">
+                                <textarea
+                                    name="genre"
+                                    id="xmlGenre"
+                                    class="categoricalValuesTextarea"
+                                    rows="3"
+                                    placeholder="Comma seperated values e.g:&#10;action,sci-fi,romance&#10;Newline seperated also accepted."></textarea>
+                            </div>
+                        </span>
 
-                    <span id="tagsContainer">
-                        <label for="xmlTags">Tags</label>
-                        <textarea
-                            name="tags"
-                            id="xmlTags"
-                            rows="3"
-                            placeholder="Comma seperated values e.g:&#10;action,sci-fi,romance&#10;Space or newline seperated also accepted."></textarea>
-                    </span>
+                        <span id="tagsContainer">
+                            <label for="xmlTags">Tags</label>
+                            <div class="textareaField border">
+                                <textarea
+                                    name="tags"
+                                    id="xmlTags"
+                                    class="categoricalValuesTextarea"
+                                    rows="3"
+                                    placeholder="Comma seperated values e.g:&#10;action,sci-fi,romance&#10;Newline seperated also accepted."></textarea>
+                            </div>
+                        </span>
 
-                    <button id="buttonFormat">Format</button>
+                        <button id="buttonFormat" class="button border">Format</button>
+                    </div>
+
+                    <label for="xmlLanguage">Language</label>
+                    <select name="language" id="xmlLanguage">
+                        <option value="en">English</option>
+                        <option value="ja">Japanese</option>
+                    </select>
+
+                    <label for="xmlManga">Manga</label>
+                    <select name="manga" id="xmlManga">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="YesAndRightToLeft">Right to Left</option>
+                    </select>
                 </div>
-
-                <label for="xmlLanguage">Language</label>
-                <select name="language" id="xmlLanguage">
-                    <option value="en">English</option>
-                    <option value="ja">Japanese</option>
-                </select>
-
-                <label for="xmlManga">Manga</label>
-                <select name="manga" id="xmlManga">
-                    <option value="No">No</option>
-                    <option value="Yes">Yes</option>
-                    <option value="YesAndRightToLeft">Right to Left</option>
-                </select>
+                <div>
+                    <h2>ComicInfo.xml</h2>
+                    <div id="xmlOutput"></div>
+                    <button id="buttonExport" class="button border" command="show-modal" commandfor="dialogExport">Export</button>
+                </div>
             </div>
-            <div>
-                <h2>ComicInfo.xml</h2>
-                <div id="xmlOutput"></div>
-                <button id="buttonExport" command="show-modal" commandfor="dialogExport">Export</button>
-            </div>
-        </div>
+        </main>
     </body>
 </html>

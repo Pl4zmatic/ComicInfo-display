@@ -35,7 +35,6 @@ export default class XmlContext {
     }
 
     getXml() {
-        const [year = "", month = "", day = ""] = this.data.date.split("-");
         const value = (key) => this.#escapeXml(this.data[key]);
 
         return `<?xml version="1.0" encoding="utf-8"?>
@@ -51,9 +50,9 @@ export default class XmlContext {
     <Writer>${value("writer")}</Writer>
     <Publisher>${value("publisher")}</Publisher>
 
-    <Year>${this.#escapeXml(year)}</Year>
-    <Month>${this.#escapeXml(month)}</Month>
-    <Day>${this.#escapeXml(day)}</Day>
+    <Year>${value("year")}</Year>
+    <Month>${value("month")}</Month>
+    <Day>${value("day")}</Day>
 
     <Genre>${value("genre")}</Genre>
     <Tags>${value("tags")}</Tags>

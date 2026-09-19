@@ -26,3 +26,39 @@
     text-align: center;
     margin: var(--flex-gap) auto;
 }
+
+label {
+    color: var(--text);
+}
+
+input,
+select {
+    color: var(--muted);
+    background-color: var(--bg-alt);
+    padding: var(--padding-form-y) var(--padding);
+    border-radius: var(--border-radius);
+    border-width: var(--border-width);
+    box-sizing: border-box;
+}
+
+textarea {
+    min-width: 100%;
+    background-color: transparent;
+    border: none;
+    color: var(--muted);
+}
+
+div:has(> textarea) {
+    width: 100%;
+    padding: var(--padding-textarea-y) var(--padding-textarea-x);
+    box-sizing: border-box;
+    overflow: hidden;
+
+    color: var(--muted);
+    background-color: var(--bg-alt);
+}
+
+div:has(> .categoricalValuesTextarea) {
+    --padding-textarea-x: 3px;
+    --padding-textarea-y: 2px;
+}

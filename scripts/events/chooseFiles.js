@@ -9,6 +9,7 @@ const contentSelected = document.getElementById("contentSelected");
 const files = document.getElementById("fileInput");
 const previewList = document.getElementById("previewList");
 const preview = document.getElementById("preview");
+const spanFolderName = document.getElementById("spanFolderName");
 
 if (files.files.length > 0) {
     filesChanged(files);
@@ -20,12 +21,25 @@ function filesChanged(element) {
     xmlContextController.allXmlContexts.length = 0;
     previewList.innerHTML = ""; // Clear the previewList container before adding new items
     preview.innerHTML = ""; // Clear the preview container before adding new items
+    spanFolderName.innerHTML = folders[0].folder;
 
     folders.forEach((folder, index) => {
+        const imageContainer = document.createElement("div");
         const image = document.createElement("img");
+        const span = document.createElement("span");
+
+        span.innerHTML = index + 1;
+
         image.src = URL.createObjectURL(Array.from(folder.files).find((file) => file.type.startsWith("image/")));
         image.id = `previewImage${index}`;
         image.dataset.subfolder = folder.subfolder;
+
+        imageContainer.tabIndex = "0";
+        imageContainer.className = "previewListItem";
+        imageContainer.appendChild(image);
+        imageContainer.appendChild(span);
+
+        previewList.appendChild(imageContainer);
 
         const folderXmlContext = new XmlContext(folder, image);
 
@@ -33,7 +47,6 @@ function filesChanged(element) {
         if (comicInfoFromFolder) parseExistingComicInfoToContext(comicInfoFromFolder, folderXmlContext);
 
         xmlContextController.allXmlContexts.push(folderXmlContext);
-        previewList.appendChild(image);
     });
     addEventsToPreviewImages();
 
