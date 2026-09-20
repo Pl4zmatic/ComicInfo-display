@@ -1,11 +1,40 @@
 import { basicSetup, EditorView } from "https://esm.sh/codemirror";
 import { xml } from "https://esm.sh/@codemirror/lang-xml";
+import { HighlightStyle, syntaxHighlighting } from "https://esm.sh/@codemirror/language";
+import { tags as t } from "https://esm.sh/@lezer/highlight";
 import { xmlContextController } from "./XmlContextController.js";
 import { EditorView as View } from "https://esm.sh/@codemirror/view";
 import JSZip from "https://esm.sh/jszip";
 import saveAs from "https://esm.sh/file-saver";
+import { createTheme } from "https://esm.sh/thememirror";
 import { xmlTools } from "./xmlTools.js";
 import LoadingBar from "./LoadingBar.js";
+
+const editorTheme = createTheme({
+    variant: "dark",
+    settings: {
+        background: "var(--panel)",
+        foreground: "var(--text)",
+        caret: "var(--highlight)",
+        selectionBackground: "color-mix(in srgb, var(--highlight) 35%, transparent)",
+        gutterBackground: "var(--panel-2)",
+        gutterForeground: "var(--muted)",
+        lineHighlight: "color-mix(in srgb, var(--highlight) 12%, transparent)",
+    },
+    styles: [],
+});
+
+const xmlSyntaxHighlight = HighlightStyle.define([
+    { tag: t.tagName, color: "var(--highlight)" },
+    { tag: t.attributeName, color: "var(--muted)" },
+    { tag: t.attributeValue, color: "var(--text)" },
+    { tag: t.content, color: "var(--text)" },
+    { tag: t.string, color: "var(--muted)" },
+    { tag: t.comment, color: "var(--more-muted)" },
+    { tag: t.processingInstruction, color: "var(--highlight-muted)" },
+    { tag: t.punctuation, color: "var(--more-muted)" },
+    { tag: t.angleBracket, color: "var(--more-muted)" },
+]);
 
 class XmlEditor {
     xmlEditorElement = new EditorView({
@@ -32,7 +61,7 @@ class XmlEditor {
     <LanguageISO></LanguageISO>
     <Manga></Manga>
 </ComicInfo>`,
-        extensions: [basicSetup, xml(), View.updateListener.of(this.#editorValueChanged.bind(this))],
+        extensions: [basicSetup, xml(), syntaxHighlighting(xmlSyntaxHighlight), View.updateListener.of(this.#editorValueChanged.bind(this)), editorTheme],
         parent: document.querySelector("#xmlOutput"),
     });
 

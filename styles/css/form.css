@@ -1,9 +1,23 @@
+#xmlForm {
+  height: var(--height-form);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 #genreAndTagsContainer {
   display: flex;
   flex-wrap: wrap;
 }
 #genreAndTagsContainer > *:first-child {
   margin-right: var(--flex-gap);
+}
+
+textarea {
+  min-width: 100%;
+  background-color: transparent;
+  border: none;
+  color: var(--muted);
 }
 
 #genreContainer,
@@ -38,14 +52,15 @@ select {
   padding: var(--padding-form-y) var(--padding);
   border-radius: var(--border-radius);
   border-width: var(--border-width);
+  border-style: solid;
+  border-color: var(--border);
+  border-top-color: var(--border-highlight);
   box-sizing: border-box;
 }
 
-textarea {
-  min-width: 100%;
-  background-color: transparent;
-  border: none;
-  color: var(--muted);
+input[type=date],
+select {
+  cursor: pointer;
 }
 
 div:has(> textarea) {

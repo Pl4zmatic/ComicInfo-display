@@ -8,6 +8,10 @@
         <script type="module" src="scripts/XmlEditor.js"></script>
         <script type="module" src="scripts/XmlForm.js"></script>
         <link rel="stylesheet" href="styles/css/main.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     </head>
     <body>
         <header>
@@ -56,9 +60,11 @@
             <div id="contentSelected" class="hidden">
                 <div id="previewContainer">
                     <div id="previewList"></div>
-                    <div id="preview"></div>
+                    <div id="preview">
+                        <small>Select an item above to display data.</small>
+                    </div>
                 </div>
-                <div class="form" id="xmlForm">
+                <div id="xmlForm">
                     <label for="xmlTitle">Title</label>
                     <input type="text" name="title" id="xmlTitle" />
 
@@ -129,8 +135,8 @@
                         <option value="YesAndRightToLeft">Right to Left</option>
                     </select>
                 </div>
-                <div>
-                    <h2>ComicInfo.xml</h2>
+                <div id="editorContainer">
+                    <h3>ComicInfo.xml</h2>
                     <div id="xmlOutput"></div>
                     <button id="buttonExport" class="button border" command="show-modal" commandfor="dialogExport">Export</button>
                 </div>

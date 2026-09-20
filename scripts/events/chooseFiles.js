@@ -20,27 +20,13 @@ function filesChanged(element) {
 
     xmlContextController.allXmlContexts.length = 0;
     previewList.innerHTML = ""; // Clear the previewList container before adding new items
-    preview.innerHTML = ""; // Clear the preview container before adding new items
     spanFolderName.innerHTML = folders[0].folder;
 
-    folders.forEach((folder, index) => {
-        const imageContainer = document.createElement("div");
+    //parsing
+    folders.forEach((folder) => {
         const image = document.createElement("img");
-        const span = document.createElement("span");
-
-        span.innerHTML = index + 1;
-
         image.src = URL.createObjectURL(Array.from(folder.files).find((file) => file.type.startsWith("image/")));
-        image.id = `previewImage${index}`;
         image.dataset.subfolder = folder.subfolder;
-
-        imageContainer.tabIndex = "0";
-        imageContainer.className = "previewListItem";
-        imageContainer.appendChild(image);
-        imageContainer.appendChild(span);
-
-        previewList.appendChild(imageContainer);
-
         const folderXmlContext = new XmlContext(folder, image);
 
         const comicInfoFromFolder = folder.files.find((file) => file.name == "ComicInfo.xml");
@@ -48,6 +34,31 @@ function filesChanged(element) {
 
         xmlContextController.allXmlContexts.push(folderXmlContext);
     });
+
+    //sorting
+    xmlContextController.allXmlContexts.sort((prevContext, nextContext) => {
+        if (prevContext.data.number && nextContext.data.number) return parseInt(prevContext.data.number) - parseInt(nextContext.data.number);
+        if (prevContext.data.number) return -1;
+        if (nextContext.data.number) return 1;
+        return 0;
+    });
+
+    //displaying
+    xmlContextController.allXmlContexts.forEach((context, index) => {
+        const imageContainer = document.createElement("div");
+        const span = document.createElement("span");
+
+        span.innerHTML = index + 1;
+
+        imageContainer.id = `previewImageContainer${index}`;
+        imageContainer.tabIndex = "0";
+        imageContainer.className = "previewListItem";
+        imageContainer.appendChild(context.previewImage);
+        imageContainer.appendChild(span);
+
+        previewList.appendChild(imageContainer);
+    });
+
     addEventsToPreviewImages();
 
     if (!contentEmpty.classList.contains("hidden")) {
@@ -58,6 +69,8 @@ function filesChanged(element) {
 
 files.addEventListener("change", (event) => {
     filesChanged(event.target);
+    const preview = document.getElementById("preview");
+    preview.innerHTML = "Select an item above to display data.";
 });
 
 function getSelectedFilesSortedAsFolders(selectedFiles) {

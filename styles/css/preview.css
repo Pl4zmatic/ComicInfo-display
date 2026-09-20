@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: var(--previewList-flex-gap);
   height: 100%;
   width: clamp(2 * var(--previewList-button-size), 100%, 33vw);
   --padding-preview: 40px;
@@ -26,6 +27,8 @@
   max-height: var(--previewList-button-size);
   aspect-ratio: 1/1;
   border-radius: var(--border-radius);
+  border: var(--border-width-selected) solid transparent;
+  box-sizing: border-box;
   overflow: hidden;
 }
 .previewListItem img {
@@ -40,12 +43,19 @@
 .previewListItem span {
   position: absolute;
   z-index: 2;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2em;
+  bottom: 5%;
+  left: 10%;
+  height: 1.2rem;
+  aspect-ratio: 1;
+  text-align: center;
+  display: inline-block;
+  line-height: 1.2rem;
+  vertical-align: middle;
+  font-size: 0.8em;
+  background-color: color-mix(in srgb, var(--bg-alt) 70%, transparent);
+  border-radius: var(--border-radius-preview-index);
 }
-.previewListItem:hover, .previewListItem:focus-visible,
+.previewListItem:not(.selected):hover, .previewListItem:not(.selected):focus-visible,
 .previewListItem img:focus-visible {
   cursor: pointer;
   transform: scale(1.05);
@@ -57,20 +67,22 @@
   height: 100%;
   box-sizing: border-box;
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   flex-direction: column;
   overflow-y: auto;
 }
 #preview img {
   max-width: 100%;
-  height: clamp(var(--height-image-preview) / 3, var(--height-image-preview), 100%);
+  max-height: 100%;
+  width: 100%;
+  height: fit-content;
   object-fit: contain;
+  border-radius: var(--border-radius);
 }
 #preview h2 {
   text-align: center;
   margin: 0 0 var(--margin-relation) 0;
-  font-size: 1.5em;
 }
 
 /*# sourceMappingURL=preview.css.map */
