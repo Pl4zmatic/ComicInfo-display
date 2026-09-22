@@ -2,6 +2,7 @@ import { addEventsToPreviewImages } from "./selectSubfolder.js";
 import XmlContext from "../xmlContext.js";
 import { xmlContextController } from "../XmlContextController.js";
 import { xmlTools } from "../xmlTools.js";
+import JSZip from "https://esm.sh/jszip";
 
 // Read Files
 const contentEmpty = document.getElementById("contentEmpty");
@@ -15,8 +16,43 @@ if (files.files.length > 0) {
     filesChanged(files);
 }
 
-function filesChanged(element) {
-    const folders = getSelectedFilesSortedAsFolders(element.files);
+async function extractZipFiles(fileList) {
+    const extractedFiles = [];
+
+    for (const file of fileList) {
+        const fileName = file.name.toLowerCase();
+        const isArchive = fileName.endsWith(".zip") || fileName.endsWith(".cbz");
+
+        if (!isArchive) {
+            extractedFiles.push(file);
+            continue;
+        }
+
+        const archiveRootName = file.name.replace(/\.(zip|cbz)$/i, "");
+        const zip = await JSZip.loadAsync(file);
+
+        for (const zipEntry of Object.values(zip.files)) {
+            if (zipEntry.dir) continue;
+
+            const fileBlob = await zipEntry.async("blob");
+            const relativePath = zipEntry.name.replace(/^\/+/, "");
+            const fileNameFromArchive = relativePath.split("/").pop();
+            const syntheticPath = `${archiveRootName}/${relativePath}`;
+
+            const extractedFile = new File([fileBlob], fileNameFromArchive, {
+                type: fileBlob.type || "application/octet-stream",
+            });
+            extractedFile.webkitRelativePath = syntheticPath;
+            extractedFiles.push(extractedFile);
+        }
+    }
+
+    return extractedFiles;
+}
+
+async function filesChanged(element) {
+    const normalizedFiles = await extractZipFiles(element.files);
+    const folders = getSelectedFilesSortedAsFolders(normalizedFiles);
 
     xmlContextController.allXmlContexts.length = 0;
     previewList.innerHTML = ""; // Clear the previewList container before adding new items
@@ -67,8 +103,8 @@ function filesChanged(element) {
     }
 }
 
-files.addEventListener("change", (event) => {
-    filesChanged(event.target);
+files.addEventListener("change", async (event) => {
+    await filesChanged(event.target);
     const preview = document.getElementById("preview");
     preview.innerHTML = "Select an item above to display data.";
 });

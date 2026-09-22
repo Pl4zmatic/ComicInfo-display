@@ -1,4 +1,5 @@
 export default class LoadingBar {
+    totalItems = 0;
     itemCounter = 0;
     itemTitle = "";
     parentElement;
@@ -15,22 +16,26 @@ export default class LoadingBar {
         this.barElement = barElement;
 
         this.toggle();
-
-        this.setItemCounter();
     }
 
-    setTitle(itemTitle) {
-        if (itemTitle) this.itemTitle = itemTitle;
-        this.titleElement.innerHTML = this.itemTitle;
+    displayItemTitle() {
+        if (this.itemTitle) this.titleElement.innerHTML = this.itemTitle;
+        else this.titleElement.innerHTML = "No File name found.";
     }
 
-    setItemCounter(itemCounter) {
-        if (itemCounter) this.itemCounter = itemCounter;
-        this.counterElement.innerHTML = this.itemCounter;
+    displayItemCounter() {
+        if (this.itemCounter || this.itemCounter == 0) this.counterElement.innerHTML = this.itemCounter;
+    }
+
+    displayItemCounterWithNumerator() {
+        let itemCounterString = `${this.itemCounter}`;
+        if (this.totalItems) itemCounterString = itemCounterString.concat(` / ${this.totalItems}`);
+
+        this.counterElement.innerHTML = itemCounterString;
     }
 
     toggle() {
-        if (this.replaceElement && !this.replaceElement.classList.contains("hidden")) {
+        if (this.replaceElement) {
             this.replaceElement.classList.toggle("hidden");
         }
 

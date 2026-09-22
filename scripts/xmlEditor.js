@@ -110,14 +110,13 @@ export const xmlEditor = new XmlEditor();
 const buttonBatch = document.getElementById("buttonBatch");
 const buttonSingle = document.getElementById("buttonSingle");
 const selectExtension = document.getElementById("selectExtension");
+const dialogExport = document.getElementById("dialogExport");
 const dialogContent = document.querySelector(".dialogContent");
 const loadingContainer = document.getElementById("loadingContainer");
 const loadingTitle = document.getElementById("loadingTitle");
 const loadingCounter = document.getElementById("loadingCounter");
 
-buttonBatch.addEventListener("click", () => {
-    const zip = new JSZip();
-
+buttonBatch.addEventListener("click", async () => {
     const itemsWithSerieOrTitle = xmlContextController.allXmlContexts.filter(function (context) {
         const hasSeriesName = !!context.data.series;
         return hasSeriesName || !!context.data.title;
@@ -130,25 +129,68 @@ buttonBatch.addEventListener("click", () => {
 
     const serieOrTitle = itemsWithSerieOrTitle[0].data.series || itemsWithSerieOrTitle[0].data.title;
 
+    dialogExport.closedBy = "none";
     const loadingBar = new LoadingBar(loadingContainer, loadingTitle, loadingCounter, undefined, dialogContent);
-
-    xmlContextController.allXmlContexts.forEach(function (context, index) {
-        const subfolderNumber = context.data.number <= 0 ? index + 1 : context.data.number;
-        const subfolderName = `${serieOrTitle} ${subfolderNumber}`;
-        zip.folder(subfolderName);
-
-        zip.file(`${subfolderName}/ComicInfo.xml`, context.getXml());
-        const files = context.folderData.files;
-        for (const xmlContextfile of files) {
-            zip.file(`${subfolderName}/${xmlContextfile.name}`, xmlContextfile);
-        }
+    xmlContextController.allXmlContexts.forEach((context) => {
+        loadingBar.totalItems += context.folderData.files.length;
     });
+    loadingBar.totalItems += xmlContextController.allXmlContexts.length;
+
+    const zip = new JSZip();
+
+    const zipChildren = async function () {
+        for (let index = 0; index < xmlContextController.allXmlContexts.length; index++) {
+            const context = xmlContextController.allXmlContexts[index];
+
+            const subfolderNumber = context.data.number <= 0 ? index + 1 : context.data.number;
+            const subfolderName = `${serieOrTitle} ${subfolderNumber}`;
+            const childZip = new JSZip();
+
+            childZip.file(`ComicInfo.xml`, context.getXml());
+            const files = context.folderData.files;
+            for (const xmlContextfile of files) {
+                if (xmlContextfile.name == "ComicInfo.xml") {
+                    console.log("ComicInfo.xml present");
+                }
+                if (xmlContextfile.name != "ComicInfo.xml") childZip.file(xmlContextfile.name, xmlContextfile);
+            }
+
+            const prevItemCounter = Number(loadingBar.itemCounter);
+            const content = await childZip.generateAsync({ type: "blob" }, function (metadata) {
+                loadingBar.itemTitle = metadata.currentFile;
+                loadingBar.displayItemTitle();
+                loadingBar.itemCounter = Number((metadata.percent / 100) * files.length + prevItemCounter).toFixed(0);
+                loadingBar.displayItemCounterWithNumerator();
+            });
+
+            let childZipName = `${subfolderName}${selectExtension.value}`;
+            const duplicateChildren = Object.keys(zip.files).filter(function (value) {
+                return value.includes(subfolderName);
+            });
+
+            if (duplicateChildren.length) {
+                childZipName = `${subfolderName}(${duplicateChildren.length})${selectExtension.value}`;
+            }
+
+            zip.file(childZipName, content);
+        }
+    };
+
+    await zipChildren();
 
     zip.generateAsync({ type: "blob" }, function (metadata) {
-        loadingBar.setTitle(metadata.currentFile);
-        loadingBar.setItemCounter(Number(metadata.percent).toFixed(0));
+        loadingBar.itemTitle = metadata.currentFile;
+        loadingBar.displayItemTitle();
+        loadingBar.itemCounter =
+            Math.round((metadata.percent / 100) * xmlContextController.allXmlContexts.length) +
+            loadingBar.totalItems -
+            xmlContextController.allXmlContexts.length;
+        loadingBar.displayItemCounterWithNumerator();
     }).then(function (content) {
-        saveAs(content, `${serieOrTitle}${selectExtension.value}`);
+        saveAs(content, `${serieOrTitle}.zip`);
+        dialogExport.closedBy = "any";
+        dialogExport.close();
+        loadingBar.toggle();
     });
 });
 
@@ -170,13 +212,25 @@ buttonSingle.addEventListener("click", () => {
     const subfolderNumber = context.data.number <= 0 ? "" : ` ${context.data.number}`;
     const subfolderName = `${itemsWithSerieOrTitle[0].data.title || itemsWithSerieOrTitle[0].data.series}${subfolderNumber}`;
 
-    zip.file(`ComicInfo.xml`, context.getXml());
+    dialogExport.closedBy = "none";
+    const loadingBar = new LoadingBar(loadingContainer, loadingTitle, loadingCounter, undefined, dialogContent);
     const files = context.folderData.files;
+    loadingBar.totalItems = files.length;
+
+    zip.file(`ComicInfo.xml`, context.getXml());
     for (const xmlContextfile of files) {
-        zip.file(`${xmlContextfile.name}`, xmlContextfile);
+        if (xmlContextfile.name != "ComicInfo.xml") zip.file(`${xmlContextfile.name}`, xmlContextfile);
     }
 
-    zip.generateAsync({ type: "blob" }).then(function (content) {
+    zip.generateAsync({ type: "blob" }, function (metadata) {
+        loadingBar.itemTitle = metadata.currentFile;
+        loadingBar.displayItemTitle();
+        loadingBar.itemCounter = Number((metadata.percent / 100) * files.length).toFixed(0);
+        loadingBar.displayItemCounterWithNumerator();
+    }).then(function (content) {
         saveAs(content, `${subfolderName}${selectExtension.value}`);
+        dialogExport.closedBy = "any";
+        dialogExport.close();
+        loadingBar.toggle();
     });
 });

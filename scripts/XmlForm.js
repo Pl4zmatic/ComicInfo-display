@@ -93,12 +93,13 @@ function formatSeperatedValues(textAreas) {
                         return specialCharsCount;
                     }, {}),
             ).sort(([key1, value1], [key2, value2]) => value2 - value1)[0][0];
-        } finally {
-            if (seperator !== undefined) console.log(seperator);
+        } catch {
+            console.log(`No seperator found`);
         }
 
-        let formattedValues = textArea.value
-            .replaceAll(seperator, ",")
+        let formattedValues;
+        if (seperator) formattedValues = textArea.value.replaceAll(seperator, ",");
+        formattedValues = textArea.value
             .replaceAll("\n", ",")
             .split(",")
             .map((element) => element.trim());
