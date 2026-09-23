@@ -55,10 +55,17 @@
             </dialog>
 
             <div id="contentEmpty">
-                <label for="fileInput">Choose folder(s)</label>
-                <input type="file" name="fileInput" id="fileInput" webkitdirectory multiple />
-                <label for="fileInputZip">Choose zip file(s)</label>
-                <input type="file" name="fileInputZip" id="fileInputZip" multiple />
+                <div class="flex-vertical flex-end">
+                    <span>
+                        <label for="fileInput">Choose folder(s)</label>
+                        <input type="file" name="fileInput" id="fileInput" webkitdirectory multiple />
+                    </span>
+
+                    <span>
+                        <label for="fileInputZip">Choose zip file(s)</label>
+                        <input type="file" name="fileInputZip" id="fileInputZip" multiple />
+                    </span>
+                </div>
             </div>
 
             <div id="contentSelected" class="hidden">
