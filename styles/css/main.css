@@ -4,18 +4,20 @@
 :root {
   --previewList-button-size: 150px;
   --button-width: 100px;
-  --height-form: 1100px;
   --border-radius: 10px;
   --border-radius-preview-index: 5px;
   --border-radius-preview: 10px;
   --border-width: 1px;
   --border-width-selected: 2px;
   --border-width-header: 1px;
+  --height-preview-container: 100vh;
+  --height-editor-container: 100vh;
   --height-image-preview: 800px;
   --height-header: calc(var(--padding) * 2 + var(--font-size-header) + var(--border-width-header));
   --previewList-flex-gap: calc(var(--previewList-button-size) / 10);
   --flex-gap: 10px;
-  --grid-gap: 100px;
+  --gap-form: 20px;
+  --grid-gap: 50px;
   --padding: 10px;
   --padding-main: 40px;
   --padding-form-y: 15px;

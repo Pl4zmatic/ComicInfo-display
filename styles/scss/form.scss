@@ -1,8 +1,7 @@
 #xmlForm {
-    height: var(--height-form);
+    height: fit-content;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 #genreAndTagsContainer {
@@ -16,6 +15,7 @@
 
 textarea {
     min-width: 100%;
+    max-width: 33vw;
     background-color: transparent;
     border: none;
     color: var(--muted);
@@ -25,7 +25,6 @@ textarea {
 #tagsContainer {
     display: flex;
     flex-direction: column;
-    gap: var(--flex-gap);
     width: calc(50% - var(--flex-gap) / 2);
     box-sizing: border-box;
 
@@ -43,6 +42,8 @@ textarea {
 }
 
 label {
+    margin-top: var(--gap-form);
+    margin-bottom: var(--margin-relation);
     color: var(--text);
 }
 
