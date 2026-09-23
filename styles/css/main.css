@@ -167,4 +167,9 @@ small {
   border-top-color: var(--highlight);
 }
 
+.flex-horizontal {
+  display: flex;
+  gap: var(--flex-gap);
+}
+
 /*# sourceMappingURL=main.css.map */

@@ -35,9 +35,8 @@ textarea {
 }
 
 #buttonFormat {
-  width: 80%;
+  flex-grow: 1;
   text-align: center;
-  margin: var(--flex-gap) auto;
 }
 
 label {
@@ -76,6 +75,13 @@ div:has(> textarea) {
 div:has(> .categoricalValuesTextarea) {
   --padding-textarea-x: 3px;
   --padding-textarea-y: 2px;
+}
+
+#formatContainer {
+  width: 100%;
+  margin: var(--flex-gap) 0;
+  justify-content: space-between;
+  gap: var(--gap-form);
 }
 
 /*# sourceMappingURL=form.css.map */

@@ -181,3 +181,8 @@ small {
     border-color: var(--highlight-muted);
     border-top-color: var(--highlight);
 }
+
+.flex-horizontal {
+    display: flex;
+    gap: var(--flex-gap);
+}

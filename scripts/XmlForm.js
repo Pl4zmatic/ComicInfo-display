@@ -74,6 +74,7 @@ class XmlForm {
 export const xmlForm = new XmlForm();
 
 const buttonFormat = document.getElementById("buttonFormat");
+const checkboxKebab = document.getElementById("checkboxKebab");
 
 buttonFormat.addEventListener("click", () => {
     formatSeperatedValues([xmlForm.formElements.genre, xmlForm.formElements.tags]);
@@ -81,20 +82,10 @@ buttonFormat.addEventListener("click", () => {
 
 function formatSeperatedValues(textAreas) {
     for (const textArea of textAreas) {
-        let seperator = undefined;
-        try {
-            seperator = Object.entries(
-                textArea.value
-                    .matchAll(/[^a-z\n\s]/g)
-                    .toArray()
-                    .reduce((specialCharsCount, char) => {
-                        if (specialCharsCount[char] === undefined) specialCharsCount[char] = 0;
-                        specialCharsCount[char] += 1;
-                        return specialCharsCount;
-                    }, {}),
-            ).sort(([key1, value1], [key2, value2]) => value2 - value1)[0][0];
-        } catch {
-            console.log(`No seperator found`);
+        const seperator = findSeperator(textArea);
+
+        if (checkboxKebab.checked) {
+            kebabCaseFormat(textArea);
         }
 
         let formattedValues;
@@ -112,4 +103,36 @@ function formatSeperatedValues(textAreas) {
             textArea,
         );
     }
+}
+
+function findSeperator(textArea) {
+    let seperator = undefined;
+
+    try {
+        seperator = Object.entries(
+            textArea.value
+                .matchAll(/[^a-z\n\s]/g)
+                .toArray()
+                .reduce((specialCharsCount, char) => {
+                    if (specialCharsCount[char] === undefined) specialCharsCount[char] = 0;
+                    specialCharsCount[char] += 1;
+                    return specialCharsCount;
+                }, {}),
+        ).sort(([key1, value1], [key2, value2]) => value2 - value1)[0][0];
+    } catch {
+        console.log(`No seperator found`);
+    }
+
+    return seperator;
+}
+
+function kebabCaseFormat(textArea) {
+    const caseTransitions = new Set(textArea.value.matchAll(/\w[A-Z]/g));
+    let newText = textArea.value;
+    caseTransitions.forEach(([value], index) => {
+        let replacementText = value.split("");
+        replacementText = replacementText.join(",");
+        newText = newText.replaceAll(value, replacementText);
+    });
+    textArea.value = newText;
 }
