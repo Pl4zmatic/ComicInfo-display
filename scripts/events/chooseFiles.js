@@ -19,34 +19,36 @@ if (inputFileFolder.files.length > 0) {
     inputFileFolderCallback(inputFileFolder);
 }
 
-if (inputFileZip.files.length > 0) {
+if (inputFileZip.files.length > 0 && !inputFileFolder.files.length) {
     await inputFileZipCallback(inputFileZip);
 }
 
 async function parseExistingComicInfoToContext(comicInfoFile, xmlContext) {
+    const fileContentString = await comicInfoFile.jsFile.text();
     for (const key of xmlContext.getKeys()) {
-        const fileContentString = await comicInfoFile.text();
         xmlContext.data[key] = xmlTools.getKeyValue(key, fileContentString);
     }
 }
 
-function filesChanged(folders) {
+async function filesChanged(folders) {
     xmlContextController.allXmlContexts.length = 0;
     previewList.innerHTML = ""; // Clear the previewList container before adding new items
     spanFolderName.innerHTML = folders[0].folder;
 
     //parsing
-    folders.forEach((folder) => {
+    for (const folder of folders) {
         const image = document.createElement("img");
-        image.src = URL.createObjectURL(Array.from(folder.files).find((file) => file.jsFile.type.startsWith("image/")).jsFile);
+        const imageFile = Array.from(folder.files).find((file) => file.jsFile.type.startsWith("image/")).jsFile;
+        image.src = URL.createObjectURL(imageFile);
+        image.alt = imageFile.name;
         image.dataset.subfolder = folder.subfolder;
         const folderXmlContext = new XmlContext(folder, image);
 
         const comicInfoFromFolder = folder.files.find((file) => file.name == "ComicInfo.xml");
-        if (comicInfoFromFolder) parseExistingComicInfoToContext(comicInfoFromFolder, folderXmlContext);
+        if (comicInfoFromFolder) await parseExistingComicInfoToContext(comicInfoFromFolder, folderXmlContext);
 
         xmlContextController.allXmlContexts.push(folderXmlContext);
-    });
+    }
 
     //sorting
     xmlContextController.allXmlContexts.sort((prevContext, nextContext) => {
@@ -57,6 +59,11 @@ function filesChanged(folders) {
     });
 
     //displaying
+    if (!contentEmpty.classList.contains("hidden")) {
+        contentEmpty.classList.toggle("hidden");
+        contentSelected.classList.toggle("hidden");
+    }
+
     xmlContextController.allXmlContexts.forEach((context, index) => {
         const imageContainer = document.createElement("div");
         const span = document.createElement("span");
@@ -73,18 +80,13 @@ function filesChanged(folders) {
     });
 
     addEventsToPreviewImages();
-
-    if (!contentEmpty.classList.contains("hidden")) {
-        contentEmpty.classList.toggle("hidden");
-        contentSelected.classList.toggle("hidden");
-    }
 }
 
-function inputFileFolderCallback(target) {
+async function inputFileFolderCallback(target) {
     const folder = new Folder(target.files);
     folder.getInputFilesFromFiles();
     const selectedFiles = folder.sortFilesAsFolders();
-    filesChanged(selectedFiles);
+    await filesChanged(selectedFiles);
     const preview = document.getElementById("preview");
     preview.innerHTML = "Select an item above to display data.";
 }
@@ -106,9 +108,9 @@ async function inputFileZipCallback(target) {
     });
     contentEmpty.appendChild(div);
 
-    zipFile.getInputFilesFromFiles().then(() => {
+    zipFile.getInputFilesFromFiles().then(async () => {
         const selectedFiles = zipFile.sortFilesAsFolders();
-        filesChanged(selectedFiles);
+        await filesChanged(selectedFiles);
         contentEmpty.removeChild(div);
         const preview = document.getElementById("preview");
         preview.innerHTML = "Select an item above to display data.";

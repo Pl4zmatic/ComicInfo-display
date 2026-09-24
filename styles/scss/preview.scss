@@ -16,6 +16,7 @@
 #previewList {
     width: 100%;
     height: var(--previewList-button-size);
+    min-width: 0;
     overflow-x: auto;
     box-sizing: border-box;
 

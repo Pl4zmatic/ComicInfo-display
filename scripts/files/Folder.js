@@ -17,22 +17,30 @@ export default class Folder {
         const folderNames = new Set(
             this.files.map((file) => {
                 const splitFilePath = file.webkitRelativePath.split("/");
-                console.log(file.name);
                 const fileNameIndex = splitFilePath.findIndex((pathPart) => pathPart == file.name);
-                console.log(fileNameIndex);
                 return splitFilePath.slice(0, fileNameIndex).join("/");
             }),
         );
 
-        for (const folderName of folderNames) {
-            const folderFiles = this.files.filter((file) => file.webkitRelativePath.startsWith(folderName));
+        const commonName = Array.from(folderNames).reduce((prevName, nextName) => {
+            return nextName.split(prevName)[0];
+        });
 
+        folderNames.forEach((folderName, index) => {
+            const splitFolderName = folderName.split("/");
+            const folderFiles = this.files.filter((file) => {
+                const splitFilePath = file.webkitRelativePath.split("/");
+                return splitFilePath.includes(splitFolderName[splitFolderName.length - 1]);
+            });
+
+            const folder = splitFolderName.length > 1 ? splitFolderName[0] : commonName;
+            const subfolder = splitFolderName.length > 1 ? splitFolderName[1] : `${commonName} ${index}`;
             sortedFiles.push({
-                folder: folderName.split("/")[0],
-                subfolder: folderName.split("/")[1],
+                folder,
+                subfolder,
                 files: folderFiles,
             });
-        }
+        });
         console.log(`Selected Files: ${JSON.stringify(sortedFiles, null, 2)}`);
         this.files = sortedFiles;
         return sortedFiles;
