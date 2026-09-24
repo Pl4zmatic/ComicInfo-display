@@ -4,7 +4,7 @@
   align-items: center;
   flex-direction: column;
   gap: var(--previewList-flex-gap);
-  height: calc(100vh - var(--height-header) - var(--padding-main) * 2);
+  height: var(--height-preview-container);
   width: clamp(2 * var(--previewList-button-size), 100%, 33vw);
   position: sticky;
   top: var(--padding-main);

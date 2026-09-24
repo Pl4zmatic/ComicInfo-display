@@ -13,8 +13,8 @@
     --border-width-selected: 2px;
     --border-width-header: 1px;
 
-    --height-preview-container: 100vh;
-    --height-editor-container: 100vh;
+    --height-preview-container: calc(100vh - var(--height-header) - var(--padding-main) * 2);
+    --height-editor-container: calc(100vh - var(--height-header) - var(--padding-main) * 2);
     --height-image-preview: 800px;
     --height-header: 60px;
 

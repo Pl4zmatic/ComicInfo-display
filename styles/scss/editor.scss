@@ -2,10 +2,12 @@
     display: flex;
     flex-direction: column;
     align-items: end;
-    height: 100%;
-    max-height: var(--height-form);
+    height: var(--height-editor-container);
     margin-bottom: auto;
     overflow: hidden;
+
+    position: sticky;
+    top: var(--padding-main);
 
     h3 {
         width: 100%;
