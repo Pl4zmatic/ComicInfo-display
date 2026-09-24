@@ -4,6 +4,7 @@ import { xmlContextController } from "../XmlContextController.js";
 import { xmlTools } from "../xmlTools.js";
 import ZipFile from "../files/ZipFile.js";
 import Folder from "../files/Folder.js";
+import LoadingBar from "../LoadingBar.js";
 
 // Read Files
 const contentEmpty = document.getElementById("contentEmpty");
@@ -94,11 +95,24 @@ inputFileFolder.addEventListener("change", (event) => {
 
 async function inputFileZipCallback(target) {
     const zipFile = new ZipFile(target.files);
-    await zipFile.getInputFilesFromFiles();
-    const selectedFiles = zipFile.sortFilesAsFolders();
-    filesChanged(selectedFiles);
-    const preview = document.getElementById("preview");
-    preview.innerHTML = "Select an item above to display data.";
+
+    //loader
+    if (contentEmpty.classList.contains("hidden")) contentEmpty.classList.toggle("hidden");
+    if (!contentSelected.classList.contains("hidden")) contentSelected.classList.toggle("hidden");
+    const div = document.createElement("div");
+    div.classList.add("loader");
+    Array.from(contentEmpty.children).forEach((child) => {
+        if (!child.classList.contains("hidden")) child.classList.toggle("hidden");
+    });
+    contentEmpty.appendChild(div);
+
+    zipFile.getInputFilesFromFiles().then(() => {
+        const selectedFiles = zipFile.sortFilesAsFolders();
+        filesChanged(selectedFiles);
+        contentEmpty.removeChild(div);
+        const preview = document.getElementById("preview");
+        preview.innerHTML = "Select an item above to display data.";
+    });
 }
 
 inputFileZip.addEventListener("change", async (event) => {

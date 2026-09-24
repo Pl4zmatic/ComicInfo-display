@@ -203,3 +203,41 @@ small {
     justify-content: end;
     align-items: end;
 }
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 15px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    animation: l5 1s infinite linear alternate;
+}
+
+@keyframes l5 {
+    0% {
+        box-shadow:
+            30px 0 #fff,
+            -30px 0 #fff9;
+        background: #fff;
+    }
+
+    33% {
+        box-shadow:
+            30px 0 #fff,
+            -30px 0 #fff9;
+        background: #fff9;
+    }
+
+    66% {
+        box-shadow:
+            30px 0 #fff9,
+            -30px 0 #fff;
+        background: #fff9;
+    }
+
+    100% {
+        box-shadow:
+            30px 0 #fff9,
+            -30px 0 #fff;
+        background: #fff;
+    }
+}
