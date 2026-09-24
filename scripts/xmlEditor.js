@@ -152,7 +152,7 @@ buttonBatch.addEventListener("click", async () => {
                 if (xmlContextfile.name == "ComicInfo.xml") {
                     console.log("ComicInfo.xml present");
                 }
-                if (xmlContextfile.name != "ComicInfo.xml") childZip.file(xmlContextfile.name, xmlContextfile);
+                if (xmlContextfile.name != "ComicInfo.xml") childZip.file(xmlContextfile.name, xmlContextfile.jsFile);
             }
 
             const prevItemCounter = Number(loadingBar.itemCounter);

@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>ComicInfo Display</title>
+        <title>Comic Info Display</title>
         <script type="module" src="scripts/events/chooseFiles.js"></script>
         <script type="module" src="scripts/XmlEditor.js"></script>
         <script type="module" src="scripts/XmlForm.js"></script>
@@ -22,10 +22,16 @@
                 Comic Info Display
             </span>
             <span id="spanFolderName"></span>
-            <button id="otherButton" class="iconWithTextContainer button border">
-                <img src="assets/file-pencil-alt-1-svgrepo-com.png" alt="" class="icon" />
-                Load Folder
-            </button>
+            <span>
+                <button id="otherFolderButton" class="iconWithTextContainer button border">
+                    <img src="assets/folder-edit-svgrepo-com.png" alt="" class="icon" />
+                    Load Folder
+                </button>
+                <button id="otherZipButton" class="iconWithTextContainer button border">
+                    <img src="assets/zip-svgrepo-com.png" alt="" class="icon" />
+                    Load Zip
+                </button>
+            </span>
         </header>
 
         <main>
@@ -57,13 +63,13 @@
             <div id="contentEmpty">
                 <div class="flex-vertical flex-end">
                     <span>
-                        <label for="fileInput">Choose folder(s)</label>
-                        <input type="file" name="fileInput" id="fileInput" webkitdirectory multiple />
+                        <label for="inputFileFolder">Choose folder(s)</label>
+                        <input type="file" name="inputFileFolder" id="inputFileFolder" webkitdirectory multiple />
                     </span>
 
                     <span>
-                        <label for="fileInputZip">Choose zip file(s)</label>
-                        <input type="file" name="fileInputZip" id="fileInputZip" multiple />
+                        <label for="inputFileZip">Choose zip file(s)</label>
+                        <input type="file" name="inputFileZip" id="inputFileZip" accept=".zip,.cbz" multiple />
                     </span>
                 </div>
             </div>
