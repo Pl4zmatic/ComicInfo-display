@@ -7,14 +7,13 @@
 #genreAndTagsContainer {
   display: flex;
   flex-wrap: wrap;
-}
-#genreAndTagsContainer > *:first-child {
-  margin-right: var(--flex-gap);
+  justify-content: center;
+  gap: var(--flex-gap);
 }
 
 textarea {
   min-width: 100%;
-  max-width: 33vw;
+  max-width: calc(50vw - var(--grid-gap) * 2);
   background-color: transparent;
   border: none;
   color: var(--muted);
@@ -24,13 +23,13 @@ textarea {
 #tagsContainer {
   display: flex;
   flex-direction: column;
-  width: calc(50% - var(--flex-gap) / 2);
+  min-width: calc(50% - var(--flex-gap) / 2);
   box-sizing: border-box;
 }
 #genreContainer textarea,
 #tagsContainer textarea {
   width: 100%;
-  max-width: 100%;
+  max-width: calc(50vw - var(--grid-gap) * 2 - var(--flex-gap));
   box-sizing: border-box;
 }
 
@@ -79,7 +78,6 @@ div:has(> .categoricalValuesTextarea) {
 
 #formatContainer {
   width: 100%;
-  margin: var(--flex-gap) 0;
   justify-content: space-between;
   gap: var(--gap-form);
 }
