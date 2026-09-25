@@ -15,6 +15,18 @@ class XmlContextController {
         }
     }
 
+    changeAllContexts(newContext = undefined, source = undefined) {
+        if (source !== undefined)
+            this.allXmlContexts.forEach((context) => {
+                context.changeContext(newContext);
+            });
+        for (const observer of this.observers) {
+            if (source === undefined || observer !== source) {
+                observer.update({ ...this.currentXmlContext.data });
+            }
+        }
+    }
+
     addObserver(observer) {
         this.observers.push(observer);
     }

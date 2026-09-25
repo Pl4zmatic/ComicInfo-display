@@ -60,6 +60,13 @@ select {
     box-sizing: border-box;
 }
 
+input.checked,
+select.checked {
+    @include mixins.colored-border($topColor: --highlight, $color: --highlight-muted);
+    background: rgb(from var(--highlight-muted) r g b / 30%) !important;
+    color: var(--text);
+}
+
 input[type="date"],
 select {
     cursor: pointer;
@@ -96,7 +103,7 @@ div:has(> .categoricalValuesTextarea) {
         justify-content: center;
         color: var(--most-muted);
         padding: calc(var(--padding) / 5);
-        border-radius: calc(var(--border-radius) / 2);
+        border-radius: calc(var(--border-radius) / 2) !important;
         background-color: var(--bg-alt);
         box-sizing: border-box;
 

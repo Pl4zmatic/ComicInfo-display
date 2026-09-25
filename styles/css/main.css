@@ -49,7 +49,7 @@
   --border: #2d2d2d;
   --border-highlight: #666;
   --highlight: #2694d9;
-  --highlight-muted: #2080bd;
+  --highlight-muted: #1b6999;
 }
 
 body {
@@ -152,7 +152,6 @@ small {
   border-radius: var(--border-radius);
   border-width: var(--border-width);
   padding: calc(var(--padding) / 2) var(--padding);
-  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 .button:hover {
   background-color: var(--highlight-muted);
@@ -162,6 +161,12 @@ small {
 .button img {
   aspect-ratio: 1;
   height: var(--height-icon);
+}
+
+.button,
+input,
+select {
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
 .border {
@@ -222,6 +227,21 @@ small {
     box-shadow: 30px 0 rgba(255, 255, 255, 0.6), -30px 0 #fff;
     background: #fff;
   }
+}
+.checked,
+.formLabel button.checked {
+  border-radius: var(--border-radius);
+  border-width: var(--border-width);
+  border-style: solid;
+  border-color: var(--highlight-muted);
+  border-top-color: var(--highlight);
+  background: rgb(from var(--highlight-muted) r g b/30%) !important;
+  border-width: var(--border-width-selected);
+  color: var(--highlight);
+}
+.checked img,
+.formLabel button.checked img {
+  filter: brightness(0) saturate(100%) invert(45%) sepia(96%) saturate(5.5) hue-rotate(180deg) brightness(0.85) !important;
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -59,7 +59,7 @@
     --border: #2d2d2d;
     --border-highlight: #666;
     --highlight: #2694d9;
-    --highlight-muted: #2080bd;
+    --highlight-muted: #1b6999;
 }
 
 body {
@@ -168,11 +168,6 @@ small {
     border-radius: var(--border-radius);
     border-width: var(--border-width);
     padding: calc(var(--padding) / 2) var(--padding);
-    transition:
-        background-color 180ms ease,
-        border-color 180ms ease,
-        transform 180ms ease,
-        box-shadow 180ms ease;
 
     &:hover {
         background-color: var(--highlight-muted);
@@ -184,6 +179,16 @@ small {
         aspect-ratio: 1;
         height: var(--height-icon);
     }
+}
+
+.button,
+input,
+select {
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
 }
 
 .border {
@@ -246,5 +251,17 @@ small {
             30px 0 #fff9,
             -30px 0 #fff;
         background: #fff;
+    }
+}
+
+.checked,
+.formLabel button.checked {
+    @include mixins.colored-border($topColor: --highlight, $color: --highlight-muted);
+    background: rgb(from var(--highlight-muted) r g b / 30%) !important;
+    border-width: var(--border-width-selected);
+    color: var(--highlight);
+
+    img {
+        filter: brightness(0) saturate(100%) invert(45%) sepia(96%) saturate(5.5) hue-rotate(180deg) brightness(0.85) !important;
     }
 }
