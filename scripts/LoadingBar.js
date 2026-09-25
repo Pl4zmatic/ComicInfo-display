@@ -20,7 +20,7 @@ export default class LoadingBar {
 
     displayItemTitle() {
         if (this.itemTitle) this.titleElement.innerHTML = this.itemTitle;
-        else this.titleElement.innerHTML = "No File name found.";
+        else this.titleElement.innerHTML = "Loading ...";
     }
 
     displayItemCounter() {

@@ -115,9 +115,13 @@ class XmlForm {
                 this.PascalCaseFormat(textArea);
             }
 
-            let formattedValues;
-            if (seperator) formattedValues = textArea.value.replaceAll(seperator, ",");
-            formattedValues = textArea.value
+            let formattedValues = textArea.value;
+            //replaced seperator to ,
+            if (seperator) formattedValues = formattedValues.replaceAll(seperator, ",");
+            //remove counters from tags
+            formattedValues = this.removeTagCounters(formattedValues);
+            // \n replaced with ,
+            formattedValues = formattedValues
                 .replaceAll("\n", ",")
                 .split(",")
                 .map((element) => element.trim());
@@ -132,13 +136,24 @@ class XmlForm {
         }
     }
 
+    removeTagCounters(text) {
+        const counters = text.match(/\((\d*,)*\d*\)/g);
+        let newValue = text;
+        if (counters) {
+            for (const counter of counters) {
+                newValue = newValue.replace(counter, "");
+            }
+        }
+        return newValue;
+    }
+
     findSeperator(textArea) {
         let seperator = undefined;
 
         try {
             seperator = Object.entries(
                 textArea.value
-                    .matchAll(/[^a-z\n\s]/g)
+                    .match(/[^a-z\n\s]/g)
                     .toArray()
                     .reduce((specialCharsCount, char) => {
                         if (specialCharsCount[char] === undefined) specialCharsCount[char] = 0;
