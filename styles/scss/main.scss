@@ -18,6 +18,7 @@
     --height-editor-container: calc(100vh - var(--height-header) - var(--padding-main) * 2);
     --height-image-preview: 800px;
     --height-header: 60px;
+    --height-icon: 1.5em;
 
     --previewList-flex-gap: calc(var(--previewList-button-size) / 10);
     --flex-gap: 10px;
@@ -151,7 +152,7 @@ small {
 
 .icon {
     aspect-ratio: 1/1;
-    height: 1.5em;
+    height: var(--height-icon);
 }
 
 .iconWithTextContainer {
@@ -177,6 +178,11 @@ small {
         background-color: var(--highlight-muted);
         cursor: pointer;
         transform: translateY(-1px);
+    }
+
+    img {
+        aspect-ratio: 1;
+        height: var(--height-icon);
     }
 }
 

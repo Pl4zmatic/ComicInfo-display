@@ -91,19 +91,25 @@ div:has(> .categoricalValuesTextarea) {
     align-items: center;
 
     button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--most-muted);
         padding: calc(var(--padding) / 5);
         border-radius: calc(var(--border-radius) / 2);
         background-color: var(--bg-alt);
+        box-sizing: border-box;
 
         img {
             aspect-ratio: 1;
-            height: 1.5em;
+            height: var(--height-icon);
             filter: brightness(0) saturate(100%) invert(31%) sepia(56%) saturate(0%) hue-rotate(0deg) brightness(81%) contrast(88%);
             transition: filter 180ms;
         }
     }
 
     button:hover {
+        color: var(--more-muted);
         border-radius: calc(var(--border-radius) / 2);
         background-color: var(--bg-alt);
 
@@ -111,4 +117,12 @@ div:has(> .categoricalValuesTextarea) {
             filter: grayscale(1) brightness(0.67);
         }
     }
+}
+
+#pinAllContainer {
+    margin-left: auto;
+}
+
+#pinAll {
+    padding-left: 0.5em;
 }
