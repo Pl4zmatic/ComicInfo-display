@@ -142,7 +142,7 @@ buttonBatch.addEventListener("click", async () => {
         for (let index = 0; index < xmlContextController.allXmlContexts.length; index++) {
             const context = xmlContextController.allXmlContexts[index];
 
-            const subfolderNumber = context.data.number <= 0 ? index + 1 : context.data.number;
+            const subfolderNumber = !context.data.number || Number(context.data.number) <= 0 ? index + 1 : context.data.number;
             const subfolderName = `${serieOrTitle} ${subfolderNumber}`;
             const childZip = new JSZip();
 
