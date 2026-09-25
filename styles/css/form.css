@@ -41,12 +41,12 @@ textarea {
 label {
   margin-top: var(--gap-form);
   margin-bottom: var(--margin-relation);
-  color: var(--text);
+  color: var(--more-muted);
 }
 
 input,
 select {
-  color: var(--muted);
+  color: var(--text);
   background-color: var(--bg-alt);
   padding: var(--padding-form-y) var(--padding);
   border-radius: var(--border-radius);
@@ -80,6 +80,30 @@ div:has(> .categoricalValuesTextarea) {
   width: 100%;
   justify-content: space-between;
   gap: var(--gap-form);
+}
+
+.formLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.formLabel button {
+  padding: calc(var(--padding) / 5);
+  border-radius: calc(var(--border-radius) / 2);
+  background-color: var(--bg-alt);
+}
+.formLabel button img {
+  aspect-ratio: 1;
+  height: 1.5em;
+  filter: brightness(0) saturate(100%) invert(31%) sepia(56%) saturate(0%) hue-rotate(0deg) brightness(81%) contrast(88%);
+  transition: filter 180ms;
+}
+.formLabel button:hover {
+  border-radius: calc(var(--border-radius) / 2);
+  background-color: var(--bg-alt);
+}
+.formLabel button:hover img {
+  filter: grayscale(1) brightness(0.67);
 }
 
 /*# sourceMappingURL=form.css.map */

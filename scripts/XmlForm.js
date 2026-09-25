@@ -74,7 +74,7 @@ class XmlForm {
 export const xmlForm = new XmlForm();
 
 const buttonFormat = document.getElementById("buttonFormat");
-const checkboxKebab = document.getElementById("checkboxKebab");
+const checkboxPascal = document.getElementById("checkboxPascal");
 
 buttonFormat.addEventListener("click", () => {
     formatSeperatedValues([xmlForm.formElements.genre, xmlForm.formElements.tags]);
@@ -84,8 +84,8 @@ function formatSeperatedValues(textAreas) {
     for (const textArea of textAreas) {
         const seperator = findSeperator(textArea);
 
-        if (checkboxKebab.checked) {
-            kebabCaseFormat(textArea);
+        if (checkboxPascal.checked) {
+            PascalCaseFormat(textArea);
         }
 
         let formattedValues;
@@ -126,7 +126,7 @@ function findSeperator(textArea) {
     return seperator;
 }
 
-function kebabCaseFormat(textArea) {
+function PascalCaseFormat(textArea) {
     const caseTransitions = new Set(textArea.value.matchAll(/\w[A-Z]/g));
     let newText = textArea.value;
     caseTransitions.forEach(([value], index) => {

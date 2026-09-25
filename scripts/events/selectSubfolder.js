@@ -8,12 +8,12 @@ export function addEventsToPreviewImages() {
             fullImage.src = context.previewImage.src;
 
             const previewImageContainer = document.getElementById(`previewImageContainer${index}`);
-            if (!previewImageContainer.classList.contains("selected")) previewImageContainer.classList.toggle("selected");
+            if (!previewImageContainer.classList.contains("borderHighlighted")) previewImageContainer.classList.toggle("borderHighlighted");
 
             xmlContextController.allXmlContexts.forEach((context, index) => {
                 const previewImageContainer = document.getElementById(`previewImageContainer${index}`);
                 if (event.target !== context.previewImage) {
-                    if (previewImageContainer.classList.contains("selected")) previewImageContainer.classList.toggle("selected");
+                    if (previewImageContainer.classList.contains("borderHighlighted")) previewImageContainer.classList.toggle("borderHighlighted");
                 }
             });
 

@@ -1,6 +1,7 @@
-@import url("./preview.css");
-@import url("./form.css");
-@import url("./editor.css");
+@use "mixins";
+@import "./preview.css";
+@import "./form.css";
+@import "./editor.css";
 
 :root {
     --previewList-button-size: 150px;
@@ -162,30 +163,30 @@ small {
 .button {
     color: var(--text);
     background-color: var(--highlight);
+    border: unset;
     border-radius: var(--border-radius);
     border-width: var(--border-width);
     padding: calc(var(--padding) / 2) var(--padding);
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
 
     &:hover {
         background-color: var(--highlight-muted);
         cursor: pointer;
+        transform: translateY(-1px);
     }
 }
 
 .border {
-    border-radius: var(--border-radius);
-    border-width: var(--border-width);
-    border-style: solid;
-    border-color: var(--border);
-    border-top-color: var(--border-highlight);
+    @include mixins.colored-border;
 }
 
-.selected {
-    border-radius: var(--border-radius);
+.borderHighlighted {
+    @include mixins.colored-border($topColor: --highlight, $color: --highlight-muted);
     border-width: var(--border-width-selected);
-    border-style: solid;
-    border-color: var(--highlight-muted);
-    border-top-color: var(--highlight);
 }
 
 .flex-horizontal {

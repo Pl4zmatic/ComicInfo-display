@@ -1,0 +1,7 @@
+@mixin colored-border($topColor: --border-highlight, $color: --border) {
+    border-radius: var(--border-radius);
+    border-width: var(--border-width);
+    border-style: solid;
+    border-color: var($color);
+    border-top-color: var($topColor);
+}

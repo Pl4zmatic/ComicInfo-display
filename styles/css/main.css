@@ -1,6 +1,6 @@
-@import url("./preview.css");
-@import url("./form.css");
-@import url("./editor.css");
+@import "./preview.css";
+@import "./form.css";
+@import "./editor.css";
 :root {
   --previewList-button-size: 150px;
   --button-width: 100px;
@@ -147,13 +147,16 @@ small {
 .button {
   color: var(--text);
   background-color: var(--highlight);
+  border: unset;
   border-radius: var(--border-radius);
   border-width: var(--border-width);
   padding: calc(var(--padding) / 2) var(--padding);
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 .button:hover {
   background-color: var(--highlight-muted);
   cursor: pointer;
+  transform: translateY(-1px);
 }
 
 .border {
@@ -164,12 +167,13 @@ small {
   border-top-color: var(--border-highlight);
 }
 
-.selected {
+.borderHighlighted {
   border-radius: var(--border-radius);
-  border-width: var(--border-width-selected);
+  border-width: var(--border-width);
   border-style: solid;
   border-color: var(--highlight-muted);
   border-top-color: var(--highlight);
+  border-width: var(--border-width-selected);
 }
 
 .flex-horizontal {

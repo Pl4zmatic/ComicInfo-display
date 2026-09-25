@@ -7,6 +7,7 @@
         <script type="module" src="scripts/events/chooseFiles.js"></script>
         <script type="module" src="scripts/XmlEditor.js"></script>
         <script type="module" src="scripts/XmlForm.js"></script>
+        <link rel="icon" type="image/x-icon" href="/assets/xml-document-svgrepo-com.png" />
         <link rel="stylesheet" href="styles/css/main.css" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,11 +24,11 @@
             </span>
             <span id="spanFolderName"></span>
             <span>
-                <button id="otherFolderButton" class="iconWithTextContainer button border">
+                <button id="otherFolderButton" class="iconWithTextContainer button">
                     <img src="assets/folder-edit-svgrepo-com.png" alt="" class="icon" />
                     Load Folder
                 </button>
-                <button id="otherZipButton" class="iconWithTextContainer button border">
+                <button id="otherZipButton" class="iconWithTextContainer button">
                     <img src="assets/zip-svgrepo-com.png" alt="" class="icon" />
                     Load Zip
                 </button>
@@ -82,38 +83,88 @@
                     </div>
                 </div>
                 <div id="xmlForm">
-                    <label for="xmlTitle">Title</label>
+                    <label for="xmlTitle" class="formLabel">
+                        Title
+                        <button class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <input type="text" name="title" id="xmlTitle" />
 
-                    <label for="xmlSeries">Series</label>
+                    <label for="xmlSeries" class="formLabel">
+                        Series
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <input type="text" name="series" id="xmlSeries" />
 
-                    <label for="xmlNumber">Number</label>
+                    <label for="xmlNumber" class="formLabel">
+                        Number
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <input type="number" name="number" id="xmlNumber" />
 
-                    <label for="xmlVolume">Volume</label>
+                    <label for="xmlVolume" class="formLabel">
+                        Volume
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <input type="number" name="volume" id="xmlVolume" />
 
-                    <label for="xmlCount">Count</label>
+                    <label for="xmlCount" class="formLabel">
+                        Count
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <input type="number" name="count" id="xmlCount" />
 
-                    <label for="xmlSummary">Summary</label>
+                    <label for="xmlSummary" class="formLabel">
+                        Summary
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <div class="textareaField border">
                         <textarea name="summary" id="xmlSummary" rows="3"></textarea>
                     </div>
 
-                    <label for="xmlWriter">Writer</label>
+                    <label for="xmlWriter" class="formLabel">
+                        Writer
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <input type="text" name="writer" id="xmlWriter" />
 
-                    <label for="xmlPublisher">Publisher</label>
+                    <label for="xmlPublisher" class="formLabel">
+                        Publisher
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <input type="text" name="publisher" id="xmlPublisher" />
 
-                    <label for="xmlDate">Date</label>
+                    <label for="xmlDate" class="formLabel">
+                        Date
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <input type="date" name="date" id="xmlDate" />
 
                     <div id="genreAndTagsContainer">
                         <span id="genreContainer">
-                            <label for="xmlGenre">Genre</label>
+                            <label for="xmlGenre" class="formLabel">
+                                Genre
+                                <button type="button" class="button border">
+                                    <img src="assets/pin-svgrepo-com.png" alt="" />
+                                </button>
+                            </label>
                             <div class="textareaField border">
                                 <textarea
                                     name="genre"
@@ -125,7 +176,12 @@
                         </span>
 
                         <span id="tagsContainer">
-                            <label for="xmlTags">Tags</label>
+                            <label for="xmlTags" class="formLabel">
+                                Tags
+                                <button type="button" class="button border">
+                                    <img src="assets/pin-svgrepo-com.png" alt="" />
+                                </button>
+                            </label>
                             <div class="textareaField border">
                                 <textarea
                                     name="tags"
@@ -138,20 +194,30 @@
 
                         <div class="flex-horizontal" id="formatContainer">
                             <span>
-                                <input type="checkbox" name="checkboxKebab" id="checkboxKebab" />
-                                <label for="checkboxKebab">Kebab Case</label>
+                                <input type="checkbox" name="checkboxPascal" id="checkboxPascal" />
+                                <label for="checkboxPascal">Pascal Case</label>
                             </span>
                             <button id="buttonFormat" class="button border">Format</button>
                         </div>
                     </div>
 
-                    <label for="xmlLanguage">Language</label>
+                    <label for="xmlLanguage" class="formLabel">
+                        Language
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <select name="language" id="xmlLanguage">
                         <option value="en">English</option>
                         <option value="ja">Japanese</option>
                     </select>
 
-                    <label for="xmlManga">Manga</label>
+                    <label for="xmlManga" class="formLabel">
+                        Manga
+                        <button type="button" class="button border">
+                            <img src="assets/pin-svgrepo-com.png" alt="" />
+                        </button>
+                    </label>
                     <select name="manga" id="xmlManga">
                         <option value="No">No</option>
                         <option value="Yes">Yes</option>
@@ -161,7 +227,7 @@
                 <div id="editorContainer">
                     <h3>ComicInfo.xml</h3>
                     <div id="xmlOutput"></div>
-                    <button id="buttonExport" class="button border" command="show-modal" commandfor="dialogExport">Export</button>
+                    <button id="buttonExport" class="button" command="show-modal" commandfor="dialogExport">Export</button>
                 </div>
             </div>
         </main>
