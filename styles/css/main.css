@@ -99,6 +99,7 @@ main #contentSelected {
 
 hr {
   width: 100%;
+  margin: 0;
 }
 
 h1 {
@@ -111,6 +112,11 @@ h2 {
 
 h3 {
   font-size: var(--font-size-h3);
+}
+
+dialog {
+  color: var(--text);
+  background-color: var(--bg-alt);
 }
 
 small {
