@@ -15,6 +15,7 @@
 
 #previewList {
   width: 100%;
+  min-height: var(--previewList-button-size);
   height: var(--previewList-button-size);
   min-width: 0;
   overflow-x: auto;
@@ -22,7 +23,6 @@
   box-sizing: border-box;
   display: flex;
   gap: var(--previewList-flex-gap);
-  justify-content: center;
   align-items: center;
 }
 
