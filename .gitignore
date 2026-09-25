@@ -2,4 +2,4 @@ package.json
 stylelint.config.mjs
 package-lock.json
 node_modules
-.vscode
+.vscode/*
