@@ -93,6 +93,7 @@ async function inputFileFolderCallback(target) {
 
 inputFileFolder.addEventListener("change", (event) => {
     inputFileFolderCallback(event.target);
+    inputFileZip.value = "";
 });
 
 async function inputFileZipCallback(target) {
@@ -119,6 +120,7 @@ async function inputFileZipCallback(target) {
 
 inputFileZip.addEventListener("change", async (event) => {
     await inputFileZipCallback(event.target);
+    inputFileFolder.value = "";
 });
 
 // Invoke fileInput field by button id: otherButton

@@ -14,7 +14,8 @@
 }
 
 #previewList {
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   min-height: var(--previewList-button-size);
   height: var(--previewList-button-size);
   min-width: 0;
