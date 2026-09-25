@@ -1,5 +1,5 @@
 import { addEventsToPreviewImages } from "./selectSubfolder.js";
-import XmlContext from "../xmlContext.js";
+import XmlContext from "../XmlContext.js";
 import { xmlContextController } from "../XmlContextController.js";
 import { xmlTools } from "../xmlTools.js";
 import ZipFile from "../files/ZipFile.js";

@@ -2,11 +2,11 @@ import { basicSetup, EditorView } from "https://esm.sh/codemirror";
 import { xml } from "https://esm.sh/@codemirror/lang-xml";
 import { HighlightStyle, syntaxHighlighting } from "https://esm.sh/@codemirror/language";
 import { tags as t } from "https://esm.sh/@lezer/highlight";
-import { xmlContextController } from "./XmlContextController.js";
 import { EditorView as View } from "https://esm.sh/@codemirror/view";
 import JSZip from "https://esm.sh/jszip";
 import saveAs from "https://esm.sh/file-saver";
 import { createTheme } from "https://esm.sh/thememirror";
+import { xmlContextController } from "./XmlContextController.js";
 import { xmlTools } from "./xmlTools.js";
 import LoadingBar from "./LoadingBar.js";
 
