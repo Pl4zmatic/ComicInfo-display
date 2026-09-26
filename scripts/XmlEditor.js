@@ -117,6 +117,7 @@ const loadingTitle = document.getElementById("loadingTitle");
 const loadingCounter = document.getElementById("loadingCounter");
 
 buttonBatch.addEventListener("click", async () => {
+    //find a serie name or title for the name of the root zip file
     const itemsWithSerieOrTitle = xmlContextController.allXmlContexts.filter(function (context) {
         const hasSeriesName = !!context.data.series;
         return hasSeriesName || !!context.data.title;
@@ -129,32 +130,47 @@ buttonBatch.addEventListener("click", async () => {
 
     const serieOrTitle = itemsWithSerieOrTitle[0].data.series || itemsWithSerieOrTitle[0].data.title;
 
+    //setup loadingBar
     dialogExport.closedBy = "none";
     const loadingBar = new LoadingBar(loadingContainer, loadingTitle, loadingCounter, undefined, dialogContent);
+    //count total amount of files to load
     xmlContextController.allXmlContexts.forEach((context) => {
         loadingBar.totalItems += context.folderData.files.length;
     });
     loadingBar.totalItems += xmlContextController.allXmlContexts.length;
 
-    const zip = new JSZip();
+    zipContextList(xmlContextController.currentXmlContext, serieOrTitle, loadingBar);
+});
 
-    const zipChildren = async function () {
-        for (let index = 0; index < xmlContextController.allXmlContexts.length; index++) {
-            const context = xmlContextController.allXmlContexts[index];
+buttonSingle.addEventListener("click", () => {
+    const context = xmlContextController.currentXmlContext;
 
-            const subfolderNumber = !context.data.number || Number(context.data.number) <= 0 ? index + 1 : context.data.number;
-            const subfolderName = `${serieOrTitle} ${subfolderNumber}`;
+    const serieOrTitle = context.data.series || context.data.title;
+
+    dialogExport.closedBy = "none";
+    const loadingBar = new LoadingBar(loadingContainer, loadingTitle, loadingCounter, undefined, dialogContent);
+    loadingBar.totalItems += context.folderData.files.length + 1;
+
+    zipContextList([context], serieOrTitle, loadingBar);
+});
+
+async function zipContextList(contextList, zipName, loadingBar) {
+    const zipChildren = new Promise(async (resolve, reject) => {
+        const zip = new JSZip();
+
+        for (let index = 0; index < contextList.length; index++) {
+            const context = contextList[index];
+
             const childZip = new JSZip();
 
+            //zip comicinfo and files
             childZip.file(`ComicInfo.xml`, context.getXml());
             const files = context.folderData.files;
             for (const xmlContextfile of files) {
-                if (xmlContextfile.name == "ComicInfo.xml") {
-                    console.log("ComicInfo.xml present");
-                }
                 if (xmlContextfile.name != "ComicInfo.xml") childZip.file(xmlContextfile.name, xmlContextfile.jsFile);
             }
 
+            //generate zip and live update loadingBar
             const prevItemCounter = Number(loadingBar.itemCounter);
             const content = await childZip.generateAsync({ type: "blob" }, function (metadata) {
                 loadingBar.itemTitle = metadata.currentFile;
@@ -163,74 +179,39 @@ buttonBatch.addEventListener("click", async () => {
                 loadingBar.displayItemCounterWithNumerator();
             });
 
-            let childZipName = `${subfolderName}${selectExtension.value}`;
+            const subfolderNumber = !context.data.number || Number(context.data.number) <= 0 ? index + 1 : context.data.number;
+            const subfolderName = `${zipName} ${subfolderNumber}`;
             const duplicateChildren = Object.keys(zip.files).filter(function (value) {
                 return value.includes(subfolderName);
             });
 
+            let childZipName = `${subfolderName}${selectExtension.value}`;
             if (duplicateChildren.length) {
                 childZipName = `${subfolderName}(${duplicateChildren.length})${selectExtension.value}`;
             }
 
             zip.file(childZipName, content);
         }
-    };
 
-    await zipChildren();
-
-    zip.generateAsync({ type: "blob" }, function (metadata) {
-        loadingBar.itemTitle = metadata.currentFile;
-        loadingBar.displayItemTitle();
-        loadingBar.itemCounter =
-            Math.round((metadata.percent / 100) * xmlContextController.allXmlContexts.length) +
-            loadingBar.totalItems -
-            xmlContextController.allXmlContexts.length;
-        loadingBar.displayItemCounterWithNumerator();
-    }).then(function (content) {
-        saveAs(content, `${serieOrTitle}.zip`);
-        dialogExport.closedBy = "any";
-        dialogExport.close();
-        loadingBar.toggle();
-    });
-});
-
-buttonSingle.addEventListener("click", () => {
-    const zip = new JSZip();
-
-    const itemsWithSerieOrTitle = xmlContextController.allXmlContexts.filter(function (context) {
-        const hasSeriesName = !!context.data.series;
-        return !!context.data.title || hasSeriesName;
+        resolve(zip);
     });
 
-    if (itemsWithSerieOrTitle.length == 0) {
-        console.error("No title or serie name found from allContexts.");
-        return;
-    }
-
-    const context = xmlContextController.currentXmlContext;
-
-    const subfolderNumber = !context.data.number || Number(context.data.number) <= 0 ? "" : context.data.number;
-    const subfolderName = `${itemsWithSerieOrTitle[0].data.title || itemsWithSerieOrTitle[0].data.series}${subfolderNumber}`;
-
-    dialogExport.closedBy = "none";
-    const loadingBar = new LoadingBar(loadingContainer, loadingTitle, loadingCounter, undefined, dialogContent);
-    const files = context.folderData.files;
-    loadingBar.totalItems = files.length;
-
-    zip.file(`ComicInfo.xml`, context.getXml());
-    for (const xmlContextfile of files) {
-        if (xmlContextfile.name != "ComicInfo.xml") zip.file(`${xmlContextfile.name}`, xmlContextfile.jsFile);
-    }
-
-    zip.generateAsync({ type: "blob" }, function (metadata) {
-        loadingBar.itemTitle = metadata.currentFile;
-        loadingBar.displayItemTitle();
-        loadingBar.itemCounter = Number((metadata.percent / 100) * files.length).toFixed(0);
-        loadingBar.displayItemCounterWithNumerator();
-    }).then(function (content) {
-        saveAs(content, `${subfolderName}${selectExtension.value}`);
-        dialogExport.closedBy = "any";
-        dialogExport.close();
-        loadingBar.toggle();
-    });
-});
+    zipChildren
+        .then(function (zip) {
+            return zip.generateAsync({ type: "blob" }, function (metadata) {
+                loadingBar.itemTitle = metadata.currentFile;
+                loadingBar.displayItemTitle();
+                loadingBar.itemCounter =
+                    Math.round((metadata.percent / 100) * xmlContextController.allXmlContexts.length) +
+                    loadingBar.totalItems -
+                    xmlContextController.allXmlContexts.length;
+                loadingBar.displayItemCounterWithNumerator();
+            });
+        })
+        .then(function (zip) {
+            saveAs(zip, `${zipName}.zip`);
+            dialogExport.closedBy = "any";
+            dialogExport.close();
+            loadingBar.toggle();
+        });
+}
