@@ -64,7 +64,7 @@ select.checked {
   border-style: solid;
   border-color: var(--highlight-muted);
   border-top-color: var(--highlight);
-  background: rgb(from var(--highlight-muted) r g b/30%) !important;
+  background: var(--highlight-more-muted) !important;
   color: var(--text);
 }
 

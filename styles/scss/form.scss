@@ -63,7 +63,7 @@ select {
 input.checked,
 select.checked {
     @include mixins.colored-border($topColor: --highlight, $color: --highlight-muted);
-    background: rgb(from var(--highlight-muted) r g b / 30%) !important;
+    background: var(--highlight-more-muted) !important;
     color: var(--text);
 }
 

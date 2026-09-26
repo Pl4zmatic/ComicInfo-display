@@ -8,7 +8,7 @@
   --border-radius-preview-index: 5px;
   --border-radius-preview: 10px;
   --border-width: 1px;
-  --border-width-selected: 3px;
+  --border-width-selected: 2px;
   --border-width-header: 1px;
   --height-preview-container: calc(100vh - var(--height-header) - var(--padding-main) * 2);
   --height-editor-container: calc(100vh - var(--height-header) - var(--padding-main) * 2);
@@ -50,6 +50,7 @@
   --border-highlight: #666;
   --highlight: #2694d9;
   --highlight-muted: #1b6999;
+  --highlight-more-muted: #142b3a;
 }
 
 body {

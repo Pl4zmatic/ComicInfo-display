@@ -41,7 +41,7 @@
     aspect-ratio: 1;
 
     border-radius: var(--border-radius);
-    border: var(--border-width-selected) solid transparent;
+    border: 3px solid transparent;
     box-sizing: border-box;
 
     overflow: hidden;
@@ -84,6 +84,10 @@
         transform: scale(1.05);
         transition: transform 0.2s ease-in-out;
     }
+}
+
+.previewListItem.borderHighlighted {
+    border-width: 3px;
 }
 
 #preview {
