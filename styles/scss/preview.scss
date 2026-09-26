@@ -36,19 +36,20 @@
 .previewListItem {
     position: relative;
 
-    height: calc(var(--previewList-button-size) - var(--padding) * 2);
+    flex-shrink: 0;
+    height: 100%;
     aspect-ratio: 1;
 
     border-radius: var(--border-radius);
     border: var(--border-width-selected) solid transparent;
     box-sizing: border-box;
 
+    overflow: hidden;
+
     img {
         height: inherit;
         aspect-ratio: 1;
         object-fit: fill;
-
-        border-radius: inherit;
 
         position: absolute;
         top: 0;

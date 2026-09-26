@@ -208,13 +208,22 @@ class XmlForm {
 
                 if (currentPinAllState && currentPinButtonState) this.buttonPinAll.classList.toggle("checked");
 
+                //toggle selected styling
                 const buttonElement = event.currentTarget;
                 buttonElement.classList.toggle("checked");
 
+                //find [key, htmlElement] for input element related to pinButton (> label) to set persistence flag
                 const formElementId = label.htmlFor;
                 const [formElementKey, formElement] = Object.entries(this.formElements).find(([key, value]) => value.id == formElementId);
                 this.persistenceFlags[formElementKey] = !currentPinButtonState;
 
+                //on pinButton activating (!currentState -> will change at end of function), invoke change event to update all contexts without needing user to input
+                if (!currentPinButtonState) {
+                    const newEvent = new Event("input", { bubbles: true });
+                    formElement.dispatchEvent(newEvent);
+                }
+
+                // if textarea, style parent div container and not textarea itself and activate pinButton
                 if (formElement.tagName == "TEXTAREA") {
                     const textareaParent = formElement.closest("div.textareaField");
                     textareaParent.classList.toggle("checked");
