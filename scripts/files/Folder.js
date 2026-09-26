@@ -22,19 +22,15 @@ export default class Folder {
             }),
         );
 
-        const commonName = Array.from(folderNames).reduce((prevName, nextName) => {
-            return nextName.split(prevName)[0];
-        });
-
-        folderNames.forEach((folderName, index) => {
+        Array.from(folderNames).forEach((folderName, index) => {
             const splitFolderName = folderName.split("/");
             const folderFiles = this.files.filter((file) => {
                 const splitFilePath = file.webkitRelativePath.split("/");
                 return splitFilePath.includes(splitFolderName[splitFolderName.length - 1]);
             });
 
-            const folder = splitFolderName.length > 1 ? splitFolderName[0] : commonName;
-            const subfolder = splitFolderName.length > 1 ? splitFolderName[1] : `${commonName} ${index}`;
+            const folder = splitFolderName.length > 1 ? splitFolderName[0] : "";
+            const subfolder = splitFolderName.length > 1 ? splitFolderName[1] : folderName;
             sortedFiles.push({
                 folder,
                 subfolder,

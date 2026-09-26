@@ -209,7 +209,7 @@ buttonSingle.addEventListener("click", () => {
 
     const context = xmlContextController.currentXmlContext;
 
-    const subfolderNumber = context.data.number <= 0 ? "" : ` ${context.data.number}`;
+    const subfolderNumber = !context.data.number || Number(context.data.number) <= 0 ? "" : context.data.number;
     const subfolderName = `${itemsWithSerieOrTitle[0].data.title || itemsWithSerieOrTitle[0].data.series}${subfolderNumber}`;
 
     dialogExport.closedBy = "none";
@@ -219,7 +219,7 @@ buttonSingle.addEventListener("click", () => {
 
     zip.file(`ComicInfo.xml`, context.getXml());
     for (const xmlContextfile of files) {
-        if (xmlContextfile.name != "ComicInfo.xml") zip.file(`${xmlContextfile.name}`, xmlContextfile);
+        if (xmlContextfile.name != "ComicInfo.xml") zip.file(`${xmlContextfile.name}`, xmlContextfile.jsFile);
     }
 
     zip.generateAsync({ type: "blob" }, function (metadata) {
