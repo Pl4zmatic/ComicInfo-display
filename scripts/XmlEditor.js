@@ -139,7 +139,7 @@ buttonBatch.addEventListener("click", async () => {
     });
     loadingBar.totalItems += xmlContextController.allXmlContexts.length;
 
-    zipContextList(xmlContextController.currentXmlContext, serieOrTitle, loadingBar);
+    zipContextList(xmlContextController.allXmlContexts, serieOrTitle, loadingBar);
 });
 
 buttonSingle.addEventListener("click", () => {

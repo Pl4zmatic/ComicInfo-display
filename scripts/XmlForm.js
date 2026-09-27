@@ -137,7 +137,7 @@ class XmlForm {
     }
 
     removeTagCounters(text) {
-        const counters = text.match(/\(?(\d+[,.])+(\d+k?)\)?/g);
+        const counters = text.match(/\(?(\d+[,.])*\d+k?\)?/g);
         let newValue = text;
         if (counters) {
             for (const counter of counters) {

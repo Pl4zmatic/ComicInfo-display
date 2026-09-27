@@ -51,6 +51,7 @@ export default class ZipFile extends Folder {
         if (lower.endsWith(".json")) return "application/json";
         if (lower.endsWith(".txt")) return "text/plain";
         if (lower.endsWith(".png")) return "image/png";
+        if (lower.endsWith(".webp")) return "image/webp";
         if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
         if (lower.endsWith(".xml")) return "application/xml";
         return "application/octet-stream";
